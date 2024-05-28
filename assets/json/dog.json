@@ -1,0 +1,10 @@
+{
+    "id": "1",
+    "name": "Royal",
+    "category": "Dog Food",
+    "oldPrice":"25.00",
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+    "price":"19.99",
+    "description":"More vitamin and glucozer can help you pet ",
+    "title":"Royal food live like royal"
+}
