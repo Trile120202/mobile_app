@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:pet_gear_pro/models/product_model.dart';
+import 'package:pet_gear_pro/services/helper.dart';
 import 'package:pet_gear_pro/views/shared/appstyle.dart';
-import 'package:antd_mobile/antd_mobile.dart';
+import 'package:pet_gear_pro/views/shared/home_widget.dart';
 import 'package:pet_gear_pro/views/shared/product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,12 +13,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  late final TabController _tabController;
+  late final TabController _tabController =
+      TabController(length: 3, vsync: this);
+
+  late Future<List<Products>> _dog;
+  late Future<List<Products>> _cat;
+  late Future<List<Products>> _other;
+
+  void getDog() {
+    _dog = Helper().getDogProducts();
+  }
+
+  void getCat() {
+    _cat = Helper().getCatProducts();
+  }
+
+  void getOther() {
+    _other = Helper().getOrtherProducts();
+  }
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    getDog();
+    getCat();
+    getOther();
   }
 
   @override
@@ -31,7 +49,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Stack(
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(10, 45, 0, 0),
+              padding: const EdgeInsets.fromLTRB(12, 45, 0, 0),
               height: MediaQuery.of(context).size.height * 0.4,
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -93,118 +111,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Padding(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.265),
+                  top: MediaQuery.of(context).size.height * 0.25),
               child: Container(
                 padding: const EdgeInsets.only(left: 12),
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.405,
-                          child: ListView.builder(
-                              itemCount: 6,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return const ProductCard(
-                                    price: "\$20.00",
-                                    category: "Dog",
-                                    id: "1",
-                                    name: "Royal nud",
-                                    image:
-                                        "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
-                              }),
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(12, 20, 12, 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Latest Product",
-                                    style: appstyle(
-                                        24, Colors.black, FontWeight.bold),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Show All",
-                                        style: appstyle(
-                                            22, Colors.black, FontWeight.w500),
-                                      ),
-                                      const Icon(
-                                        AntIcons.rightOutline,
-                                        size: 20,
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.13,
-                            child: ListView.builder(
-                                itemCount: 6,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                        decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(16)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.white,
-                                                  spreadRadius: 1,
-                                                  blurRadius: 0.8,
-                                                  offset: Offset(0, 1))
-                                            ]),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.12,
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.28,
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
-                                        )),
-                                  );
-                                }),
-                          ),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.405,
-                          color: Colors.blue,
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.405,
-                          color: Colors.red,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+                child: TabBarView(controller: _tabController, children: [
+                  HomeWidget(
+                    dog: _dog,
+                    tabIndex: 0,
+                  ),
+                  HomeWidget(
+                    dog: _cat,
+                    tabIndex: 1,
+                  ),
+                  HomeWidget(
+                    dog: _other,
+                    tabIndex: 2,
+                  ),
+                ]),
               ),
-            ),
+            )
           ],
         ),
       ),
