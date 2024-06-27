@@ -24,7 +24,6 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-    bool selected = true;
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 20, 0),
       child: ClipRRect(
@@ -87,23 +86,9 @@ class _ProductCardState extends State<ProductCard> {
                       widget.price,
                       style: appstyle(30, Colors.black, FontWeight.w600),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "Colors",
-                          style: appstyle(18, Colors.grey, FontWeight.w500),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        ChoiceChip(
-                          label: Text(" "),
-                          selected: selected,
-                          visualDensity: VisualDensity.compact,
-                          selectedColor: Colors.black,
-                        )
-                      ],
-                    )
+                    const SizedBox(
+                      width: 5,
+                    ),
                   ],
                 ),
               )

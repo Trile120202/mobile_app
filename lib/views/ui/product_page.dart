@@ -27,12 +27,12 @@ class _ProductPageState extends State<ProductPage> {
   late Future<Products> _item;
 
   void getItem() {
-    if (widget.category == "Dog's Food") {
+    if (widget.category == "Dog Food") {
       _item = Helper().getDogProductsById(widget.id);
-    } else if (widget.category == "Cat's Food") {
+    } else if (widget.category == "Cat Food") {
       _item = Helper().getCatProductsById(widget.id);
     } else {
-      _item = Helper().getDogProductsById(widget.id);
+      _item = Helper().getOtherProductsById(widget.id);
     }
   }
 
@@ -247,22 +247,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   ),
                                                   Row(
                                                     children: [
-                                                      Text(
-                                                        "Weight",
-                                                        style: appstyle(
-                                                            18,
-                                                            Colors.black,
-                                                            FontWeight.w500),
-                                                      ),
                                                       const SizedBox(
                                                         width: 5,
-                                                      ),
-                                                      Text(
-                                                        "5kg",
-                                                        style: appstyle(
-                                                            20,
-                                                            Colors.grey,
-                                                            FontWeight.w500),
                                                       ),
                                                     ],
                                                   ),
