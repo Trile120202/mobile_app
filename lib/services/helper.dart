@@ -1,49 +1,60 @@
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:pet_gear_pro/services/config.dart';
 import 'package:pet_gear_pro/models/product_model.dart';
 
 class Helper {
+  static var client = http.Client();
   //Dog
   Future<List<Products>> getDogProducts() async {
-    final data = await rootBundle.loadString("assets/json/dog.json");
-    final dogList = productsFromJson(data);
-    return dogList;
+    var url = Uri.http(Config.apiUrl, Config.foods);
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var dogList = productsFromJson(response.body);
+      var dog = dogList.where((element) => element.category == "Dog Food");
+      return dog.toList();
+    } else {
+      throw Exception('Failed to load jobs list');
+    }
   }
 
   //Cat
   Future<List<Products>> getCatProducts() async {
-    final data = await rootBundle.loadString("assets/json/cat.json");
-    final catList = productsFromJson(data);
-    return catList;
+    var url = Uri.http(Config.apiUrl, Config.foods);
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var catList = productsFromJson(response.body);
+      var cat = catList.where((element) => element.category == "Cat Food");
+      return cat.toList();
+    } else {
+      throw Exception('Failed to load jobs list');
+    }
   }
 
   //Other
   Future<List<Products>> getOrtherProducts() async {
-    final data = await rootBundle.loadString("assets/json/other.json");
-    final ortherList = productsFromJson(data);
-    return ortherList;
+    var url = Uri.http(Config.apiUrl, Config.foods);
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var ortherList = productsFromJson(response.body);
+      var orther = ortherList.where((element) => element.category == "Gear");
+      return orther.toList();
+    } else {
+      throw Exception('Failed to load jobs list');
+    }
   }
 
-  //Single Cat
-  Future<Products> getCatProductsById(String id) async {
-    final data = await rootBundle.loadString("assets/json/cat.json");
-    final catList = productsFromJson(data);
-    final cat = catList.firstWhere((cat) => cat.id == id);
-    return cat;
-  }
+  Future<List<Products>> search(String searchQuery) async {
+    var url = Uri.http(Config.apiUrl, "${Config.search}$searchQuery");
+    var response = await client.get(url);
+    if (response.statusCode == 200) {
+      var results = productsFromJson(response.body);
 
-  //Single Dog
-  Future<Products> getDogProductsById(String id) async {
-    final data = await rootBundle.loadString("assets/json/dog.json");
-    final dogList = productsFromJson(data);
-    final dog = dogList.firstWhere((dog) => dog.id == id);
-    return dog;
-  }
-
-  //Another
-  Future<Products> getOtherProductsById(String id) async {
-    final data = await rootBundle.loadString("assets/json/other.json");
-    final otList = productsFromJson(data);
-    final orther = otList.firstWhere((orther) => orther.id == id);
-    return orther;
+      return results;
+    } else {
+      throw Exception('Failed to load products');
+    }
   }
 }

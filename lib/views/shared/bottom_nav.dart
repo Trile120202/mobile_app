@@ -17,9 +17,9 @@ class BottomNavBar extends StatelessWidget {
             child: Padding(
           padding: const EdgeInsets.all(8),
           child: Container(
-            padding: EdgeInsets.all(12),
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: const BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.all(Radius.circular(16))),
             child: Row(
@@ -46,22 +46,14 @@ class BottomNavBar extends StatelessWidget {
                     mainScreenNotifier.pageIndex = 2;
                   },
                   icon: mainScreenNotifier.pageIndex == 2
-                      ? Ionicons.add
-                      : Ionicons.add_circle_outline,
+                      ? Ionicons.heart
+                      : Ionicons.heart_circle_outline,
                 ),
                 BottomNavWidget(
                   onTap: () {
                     mainScreenNotifier.pageIndex = 3;
                   },
                   icon: mainScreenNotifier.pageIndex == 3
-                      ? Ionicons.cart
-                      : Ionicons.cart_outline,
-                ),
-                BottomNavWidget(
-                  onTap: () {
-                    mainScreenNotifier.pageIndex = 4;
-                  },
-                  icon: mainScreenNotifier.pageIndex == 4
                       ? Ionicons.person
                       : Ionicons.person_outline,
                 ),

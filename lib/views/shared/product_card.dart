@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:hive/hive.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pet_gear_pro/controllers/favorites_provider.dart';
+import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:pet_gear_pro/views/shared/appstyle.dart';
+import 'package:pet_gear_pro/views/ui/auth/login.dart';
+import 'package:pet_gear_pro/views/ui/favorites.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
   const ProductCard(
@@ -22,8 +29,32 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  final _favBox = Hive.box('fav_box');
+
+  Future<void> _createFav(Map<String, dynamic> addFav) async {
+    await _favBox.add(addFav);
+    getFavorites();
+  }
+
+  getFavorites() {
+    var favoritesNotifier =
+        Provider.of<FavoritesNotifier>(context, listen: false);
+    final favData = _favBox.keys.map((key) {
+      final item = _favBox.get(key);
+      return {
+        "key": key,
+        "id": item['id'],
+      };
+    }).toList();
+
+    favoritesNotifier.favorites = favData.toList();
+    favoritesNotifier.ids =
+        favoritesNotifier.favorites.map((item) => item['id']).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var loginNotifier = Provider.of<LoginNotifier>(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 20, 0),
       child: ClipRRect(
@@ -50,17 +81,46 @@ class _ProductCardState extends State<ProductCard> {
                             DecorationImage(image: NetworkImage(widget.image))),
                   ),
                   Positioned(
-                    right: 10,
-                    top: 10,
-                    child: GestureDetector(
-                      onTap: null,
-                      child: Icon(Ionicons.heart_outline),
-                    ),
-                  ),
+                      right: 10,
+                      top: 10,
+                      child: Consumer<FavoritesNotifier>(
+                        builder: (context, favoritesNotifier, child) {
+                          return GestureDetector(
+                            onTap: () async {
+                              if (loginNotifier.loggedIn == true) {
+                                if (favoritesNotifier.ids.contains(widget.id)) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Favorites()));
+                                } else {
+                                  _createFav({
+                                    "id": widget.id,
+                                    "name": widget.name,
+                                    "category": widget.category,
+                                    "imageUrl": widget.image,
+                                    "price": widget.price,
+                                  });
+                                }
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginPage()));
+                              }
+                            },
+                            child: favoritesNotifier.ids.contains(widget.id)
+                                ? const Icon(AntDesign.heart)
+                                : const Icon(AntDesign.hearto),
+                          );
+                        },
+                      )),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -78,7 +138,7 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
+                padding: const EdgeInsets.only(left: 8, right: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

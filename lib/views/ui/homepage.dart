@@ -3,7 +3,6 @@ import 'package:pet_gear_pro/models/product_model.dart';
 import 'package:pet_gear_pro/services/helper.dart';
 import 'package:pet_gear_pro/views/shared/appstyle.dart';
 import 'package:pet_gear_pro/views/shared/home_widget.dart';
-import 'package:pet_gear_pro/views/shared/product_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

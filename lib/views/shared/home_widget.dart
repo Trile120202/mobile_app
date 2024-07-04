@@ -1,4 +1,3 @@
-import 'package:antd_mobile/antd_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:pet_gear_pro/controllers/product_provider.dart';
@@ -31,7 +30,9 @@ class HomeWidget extends StatelessWidget {
                 future: _dog,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
                   } else if (snapshot.hasError) {
                     return Text("Error ${snapshot.error}");
                   } else {
@@ -47,8 +48,8 @@ class HomeWidget extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ProductPage(
-                                          id: item.id,
-                                          category: item.category)));
+                                            products: item,
+                                          )));
                             },
                             child: ProductCard(
                               price: "\$${item.price}",
@@ -118,7 +119,15 @@ class HomeWidget extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: NewProducts(
-                              imageUrl: item.imageUrl[1],
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProductPage(
+                                              products: item,
+                                            )));
+                              },
+                              imageUrl: item.imageUrl[0],
                             ),
                           );
                         });

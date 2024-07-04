@@ -196,7 +196,7 @@ class _ProductByCatState extends State<ProductByCat>
                         const SizedBox(
                           height: 20,
                         ),
-                        const Row(
+                        Row(
                           children: [
                             CategoryBtn(
                               label: "Dog",
@@ -220,7 +220,7 @@ class _ProductByCatState extends State<ProductByCat>
                         const SizedBox(
                           height: 20,
                         ),
-                        const Row(
+                        Row(
                           children: [
                             CategoryBtn(
                               buttonClr: Colors.black,
@@ -241,7 +241,7 @@ class _ProductByCatState extends State<ProductByCat>
                           "Price",
                           style: appstyle(20, Colors.black, FontWeight.bold),
                         ),
-                        const CustomSpacer(),
+                        CustomSpacer(),
                         Slider(
                             value: _value,
                             activeColor: Colors.black,
@@ -252,7 +252,7 @@ class _ProductByCatState extends State<ProductByCat>
                             label: _value.toString(),
                             secondaryTrackValue: 200,
                             onChanged: (double value) {}),
-                        const CustomSpacer(),
+                        CustomSpacer(),
                         Text(
                           "Brand",
                           style: appstyle(20, Colors.black, FontWeight.bold),

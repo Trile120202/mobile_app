@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pet_gear_pro/controllers/cart_provider.dart';
+import 'package:pet_gear_pro/controllers/favorites_provider.dart';
+import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:pet_gear_pro/controllers/mainscreen_provider.dart';
+import 'package:pet_gear_pro/controllers/payment_provider.dart';
 import 'package:pet_gear_pro/controllers/product_provider.dart';
 import 'package:pet_gear_pro/views/ui/mainscreen.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,10 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => MainScreenNotifier()),
     ChangeNotifierProvider(create: (context) => ProductNotifier()),
+    ChangeNotifierProvider(create: (context) => CartProvider()),
+    ChangeNotifierProvider(create: (context) => FavoritesNotifier()),
+    ChangeNotifierProvider(create: (context) => LoginNotifier()),
+    ChangeNotifierProvider(create: (context) => PaymentNotifier()),
   ], child: const MyApp()));
 }
 
@@ -25,7 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(375, 812),
+        designSize: const Size(325, 825),
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
@@ -36,7 +44,7 @@ class MyApp extends StatelessWidget {
             ),
 
             // sets the homescreen of the app
-            home: MainScreen(),
+            home: const MainScreen(),
           );
         });
   }

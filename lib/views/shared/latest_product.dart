@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pet_gear_pro/models/product_model.dart';
 import 'package:pet_gear_pro/views/shared/stagger_tile.dart';
+import 'package:pet_gear_pro/views/ui/product_page.dart';
 
 class latestProducts extends StatelessWidget {
   const latestProducts({
@@ -31,13 +32,23 @@ class latestProducts extends StatelessWidget {
                     (index % 2 == 0) ? 1 : 1,
                     (index % 4 == 1 || index % 4 == 3)
                         ? MediaQuery.of(context).size.height * 0.35
-                        : MediaQuery.of(context).size.height * 0.3),
+                        : MediaQuery.of(context).size.height * 0.305),
                 itemBuilder: (context, index) {
                   final item = snapshot.data![index];
-                  return StaggerTile(
-                      imageUrl: item.imageUrl[1],
-                      name: item.name,
-                      price: "\$${item.price}");
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductPage(
+                                    products: item,
+                                  )));
+                    },
+                    child: StaggerTile(
+                        imageUrl: item.imageUrl[1],
+                        name: item.name,
+                        price: "\$${item.price}"),
+                  );
                 });
           }
         });
