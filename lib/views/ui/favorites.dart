@@ -56,7 +56,7 @@ class _FavoritesState extends State<Favorites> {
                     height: MediaQuery.of(context).size.height * 0.4,
                     decoration: const BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage("assets/images/top_image.png"),
+                            image: AssetImage("assets/images/petgear.png"),
                             fit: BoxFit.cover)),
                     child: Container(
                       margin: EdgeInsets.only(top: 20.h),

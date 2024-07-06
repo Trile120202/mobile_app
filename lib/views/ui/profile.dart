@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:pet_gear_pro/controllers/login_provider.dart';
-import 'package:pet_gear_pro/models/auth_response/profile_model.dart';
 import 'package:pet_gear_pro/services/auth_helper.dart';
 import 'package:pet_gear_pro/views/shared/appstyle.dart';
 import 'package:pet_gear_pro/views/shared/tiles_widget.dart';
@@ -14,6 +12,8 @@ import 'package:pet_gear_pro/views/ui/orders/orders.dart';
 import 'package:pet_gear_pro/views/ui/payments/failed.dart';
 import 'package:pet_gear_pro/views/ui/payments/successful.dart';
 import 'package:provider/provider.dart';
+import 'package:pet_gear_pro/models/auth_response/profile_model.dart';
+import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -36,9 +36,18 @@ class _ProfilePageState extends State<ProfilePage> {
   getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     isLogged = prefs.getBool("loggedIn") ?? false;
+
     if (isLogged == true) {
-      profile = AuthHelper.getProfile();
-    } else {}
+      try {
+        profile = AuthHelper.getProfile();
+      } catch (e) {
+        print('Error getting profile: $e');
+      }
+    } else {
+      profile = null;
+    }
+
+    setState(() {}); // Ensure the state is updated after getting user info
   }
 
   @override
@@ -105,83 +114,75 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.09,
+                    padding: const EdgeInsets.fromLTRB(12.0, 10, 16, 16),
                     decoration: const BoxDecoration(color: Colors.white),
-                    child: Column(
-                      children: [
-                        Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(12.0, 10, 16, 16),
-                            child: Consumer<LoginNotifier>(
-                                builder: (context, loginNotifier, child) {
-                              return FutureBuilder<ProfileRes>(
-                                future: profile,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const Center(
-                                        child: CircularProgressIndicator
-                                            .adaptive());
-                                  } else if (snapshot.hasError) {
-                                    return Text("Error ${snapshot.error}");
-                                  } else {
-                                    final userData = snapshot.data;
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                    child: Consumer<LoginNotifier>(
+                      builder: (context, loginNotifier, child) {
+                        return FutureBuilder<ProfileRes>(
+                          future: profile,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator.adaptive());
+                            } else if (snapshot.hasError) {
+                              return Text("Error: ${snapshot.error}");
+                            } else if (!snapshot.hasData) {
+                              return const Text("No user data available");
+                            } else {
+                              final userData = snapshot.data;
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 35,
+                                        width: 35,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey.shade100,
+                                          backgroundImage: const AssetImage(
+                                              "assets/images/user.jpeg"),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              height: 35,
-                                              width: 35,
-                                              child: CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.grey.shade100,
-                                                backgroundImage: const AssetImage(
-                                                    "assets/images/user.jpeg"),
-                                              ),
+                                            Text(
+                                              userData?.username ?? "",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
                                             ),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    userData?.username ?? "",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium,
-                                                  ),
-                                                  Text(
-                                                    userData?.email ?? "",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall,
-                                                  ),
-                                                ],
-                                              ),
+                                            Text(
+                                              userData?.email ?? "",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
                                             ),
                                           ],
                                         ),
-                                        GestureDetector(
-                                            onTap: () {},
-                                            child: const Icon(Feather.edit,
-                                                size: 18))
-                                      ],
-                                    );
-                                  }
-                                },
+                                      ),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: const Icon(Feather.edit, size: 18),
+                                  )
+                                ],
                               );
-                            }))
-                      ],
+                            }
+                          },
+                        );
+                      },
                     ),
                   ),
                   Column(
@@ -190,7 +191,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 10,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
                         decoration: const BoxDecoration(color: Colors.white),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +235,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 10,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.13,
                         decoration: const BoxDecoration(color: Colors.white),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +268,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 10,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
                         decoration: const BoxDecoration(color: Colors.white),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

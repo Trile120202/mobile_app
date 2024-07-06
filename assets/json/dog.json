@@ -9,8 +9,8 @@
             "https://www.thinkjinx.com/cdn/shop/files/salmon-sweet-potato-kibble-dog-kibble-jinx-189839.jpg?v=1709590809&width=3000",
             "https://www.thinkjinx.com/cdn/shop/files/salmon-sweet-potato-kibble-dog-kibble-jinx-378295.jpg?v=1709590809&width=3000"
         ],
-        "oldPrice": 25.00,
-        "price": 18.00,
+        "oldPrice": "25.00",
+        "price": "18.00",
         "description": " Real Salmon as the #1 ingredient, 20+ superfoods for all functional needs. No corn, wheat, soy, fillers, chicken by-products, or artificial preservatives, SweetPotato for digestion & eye health",
         "title": "Royal food live like royal"
     },
@@ -23,8 +23,8 @@
             "https://www.thinkjinx.com/cdn/shop/files/beef-sweet-potato-kibble-dog-kibble-jinx-100470.jpg?v=1702616669&width=3000",
             "https://www.thinkjinx.com/cdn/shop/files/beef-sweet-potato-kibble-dog-kibble-jinx-123921.jpg?v=1702617049&width=3000"
         ],
-        "oldPrice": 25.00,
-        "price": 19.99,
+        "oldPrice": "25.00",
+        "price": "19.99",
         "description": "Our Beef, Brown Rice, and Sweet Potato kibble recipe is formulated by experts to ensure your dog maintains a strong foundation of health — with a great taste that can only come from using real, high quality ingredients. Made with high quality protein to promote healthy joints and muscles, whole grains for sustained energy and digestion, and essential vitamins and minerals to support your dog's overall brain, immune and heart function.",
         "title": "No.1 Dog-Food in the world"
     },
@@ -36,8 +36,8 @@
             "https://cdn.petsathome.com/public/images/products/900_7103743_01.jpg",
             "https://cdn.petsathome.com/public/images/products/900_7103743_04.jpg","https://cdn.petsathome.com/public/images/products/900_7103743_05.jpg"
         ],
-        "oldPrice": 25.00,
-        "price": 19.99,
+        "oldPrice": "25.00",
+        "price": "15.49",
         "description": "Royal Canin Anallergenic is specially formulated nutritional solution, created with the specific needs of your nutrient intolerant dog in mind. Formulated with feather protein hydrolysate, Royal Canin Anallergenic contains very low molecular weight oligopeptides and free amino acids. Larger proteins of a certain size are more likely to cause an allergic reaction. Low weight oligopeptides and free amino acids are proteins which have been broken into very small pieces to reduce the risk of them being able to cause a reaction in even the very sensitive of dogs and cats. ",
         "title": "Royal Canin Medium Breed Adult Dry Dog Food"
     }

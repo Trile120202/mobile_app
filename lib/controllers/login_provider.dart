@@ -41,7 +41,6 @@ class LoginNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Logout the user
   logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
@@ -49,32 +48,28 @@ class LoginNotifier extends ChangeNotifier {
     loggedIn = prefs.getBool("loggedIn") ?? false;
   }
 
-  // User login method
   Future<bool> userLogin(LoginModel model) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    processing = true; // Start processing
-    bool response = await AuthHelper.login(model); // Perform login request
-    processing = false; // Stop processing
-    loginResponseBool = response; // Set login response
-    loggedIn = prefs.getBool("loggedIn") ?? false; // Update logged-in status
+    processing = true;
+    bool response = await AuthHelper.login(model);
+    processing = false;
+    loginResponseBool = response;
+    loggedIn = prefs.getBool("loggedIn") ?? false;
     return loginResponseBool;
   }
 
-  // Get shared preferences
   getPrefs() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     loggedIn = prefs.getBool("loggedIn") ?? false;
   }
 
-  // Register user method
   Future<bool> registerUser(SignupModel model) async {
-    responseBool = await AuthHelper.signup(model); // Perform signup request
+    responseBool = await AuthHelper.signup(model);
     return responseBool;
   }
 
   Future<ProfileRes> getUser() async {
     var profile = AuthHelper.getProfile();
-
     return profile;
   }
 }

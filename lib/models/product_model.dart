@@ -17,6 +17,7 @@ class Products {
     required this.description,
     required this.title,
   });
+
   final String id;
   final String name;
   final String category;
@@ -26,19 +27,23 @@ class Products {
   final String description;
   final String title;
 
-  factory Products.fromJson(Map<String, dynamic> json) => Products(
-        id: json['id'],
-        name: json['name'],
-        category: json['category'],
-        imageUrl: List<String>.from(json['imageUrl'].map((x) => x)),
-        oldPrice: json["oldPrice"],
-        price: json["price"],
-        description: json['description'],
-        title: json['title'],
-      );
+  factory Products.fromJson(Map<String, dynamic> json) {
+    return Products(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      category: json['category'] ?? '',
+      imageUrl: json['imageUrl'] != null
+          ? List<String>.from(json['imageUrl'].map((x) => x))
+          : [],
+      oldPrice: json["oldPrice"] ?? '',
+      price: json["price"] ?? '',
+      description: json['description'] ?? '',
+      title: json['title'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
+        "id": id,
         "name": name,
         "title": title,
         "category": category,
