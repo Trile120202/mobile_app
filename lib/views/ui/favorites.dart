@@ -164,7 +164,7 @@ class _FavoritesState extends State<Favorites> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      MainScreen()));
+                                                      const MainScreen()));
                                         },
                                         child: const Icon(
                                           Ionicons.md_heart_dislike,

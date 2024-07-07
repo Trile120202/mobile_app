@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:pet_gear_pro/models/product_model.dart';
 import 'package:pet_gear_pro/services/helper.dart';
 import 'package:pet_gear_pro/views/shared/appstyle.dart';
 import 'package:pet_gear_pro/views/shared/home_widget.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,6 +43,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var loginNotifier = Provider.of<LoginNotifier>(context);
+    loginNotifier.getPrefs();
     return Scaffold(
       backgroundColor: const Color(0xFFE2E2E2),
       body: SizedBox(

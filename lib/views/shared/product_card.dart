@@ -85,36 +85,40 @@ class _ProductCardState extends State<ProductCard> {
                       top: 10,
                       child: Consumer<FavoritesNotifier>(
                         builder: (context, favoritesNotifier, child) {
-                          return GestureDetector(
-                            onTap: () async {
-                              if (loginNotifier.loggedIn == true) {
-                                if (favoritesNotifier.ids.contains(widget.id)) {
+                          return Consumer<LoginNotifier>(
+                              builder: (context, loginNotifier, child) {
+                            return GestureDetector(
+                              onTap: () async {
+                                if (loginNotifier.loggedIn == true) {
+                                  if (favoritesNotifier.ids
+                                      .contains(widget.id)) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Favorites()));
+                                  } else {
+                                    _createFav({
+                                      "id": widget.id,
+                                      "name": widget.name,
+                                      "category": widget.category,
+                                      "imageUrl": widget.image,
+                                      "price": widget.price,
+                                    });
+                                  }
+                                } else {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const Favorites()));
-                                } else {
-                                  _createFav({
-                                    "id": widget.id,
-                                    "name": widget.name,
-                                    "category": widget.category,
-                                    "imageUrl": widget.image,
-                                    "price": widget.price,
-                                  });
+                                              const LoginPage()));
                                 }
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()));
-                              }
-                            },
-                            child: favoritesNotifier.ids.contains(widget.id)
-                                ? const Icon(AntDesign.heart)
-                                : const Icon(AntDesign.hearto),
-                          );
+                              },
+                              child: favoritesNotifier.ids.contains(widget.id)
+                                  ? const Icon(AntDesign.heart)
+                                  : const Icon(AntDesign.hearto),
+                            );
+                          });
                         },
                       )),
                 ],

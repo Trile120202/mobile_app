@@ -3,16 +3,15 @@ import 'dart:convert';
 String addToCartToJson(AddToCart data) => json.encode(data.toJson());
 
 class AddToCart {
-  String cartItem;
-  int quantity;
+  final String cartItem;
+  final int quantity;
 
-  AddToCart({
-    required this.cartItem,
-    required this.quantity,
-  });
+  AddToCart({required this.cartItem, required this.quantity});
 
-  Map<String, dynamic> toJson() => {
-        "cartItem": cartItem,
-        "quantity": quantity,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'cartItem': cartItem,
+      'quantity': quantity,
+    };
+  }
 }

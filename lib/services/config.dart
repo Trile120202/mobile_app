@@ -1,6 +1,6 @@
 class Config {
   static const apiUrl = "sever-production-b0f7.up.railway.app";
-  static const paymentBaseUrl = "stripeserver-production-28e7.up.railway.app";
+  static const paymentBaseUrl = "paymentsever-production.up.railway.app";
   static const String loginUrl = "/api/login";
   static const String paymentUrl = "/stripe/create-checkout-session";
   static const String signupUrl = "/api/register";

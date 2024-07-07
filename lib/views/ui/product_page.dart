@@ -8,6 +8,7 @@ import 'package:pet_gear_pro/controllers/favorites_provider.dart';
 import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:pet_gear_pro/controllers/product_provider.dart';
 import 'package:pet_gear_pro/models/cart/add_to_cart.dart';
+import 'package:pet_gear_pro/models/cart/get_products.dart';
 import 'package:pet_gear_pro/models/product_model.dart';
 import 'package:pet_gear_pro/services/cart_helper.dart';
 import 'package:pet_gear_pro/services/helper.dart';

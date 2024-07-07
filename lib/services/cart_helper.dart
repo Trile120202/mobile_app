@@ -1,28 +1,26 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pet_gear_pro/models/cart/add_to_cart.dart';
 import 'package:pet_gear_pro/models/cart/get_products.dart';
 import 'package:pet_gear_pro/models/orders/orders_res.dart';
 import 'package:pet_gear_pro/services/config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CartHelper {
   static var client = http.Client();
 
-// Add to cart HELPER
-
+  // Add to cart HELPER
   static Future<bool> addToCart(AddToCart model) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'token': 'Bearer $token'
+      'Authorization': 'Bearer $token', // Sử dụng header Authorization
     };
 
-    var url = Uri.http(Config.apiUrl, Config.addCartUrl);
-    var response = await client.post(url,
-        headers: requestHeaders, body: jsonEncode(model.toJson()));
-
+    var url = Uri.https(Config.apiUrl, Config.addCartUrl); // Sử dụng Uri.https
+    var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model.toJson()));
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -30,17 +28,16 @@ class CartHelper {
     }
   }
 
-  //GET CART HELPER
-
+  // GET CART HELPER
   static Future<List<Product>> getCart() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'token': 'Bearer $token'
+      'Authorization': 'Bearer $token', // Sử dụng header Authorization
     };
 
-    var url = Uri.http(Config.apiUrl, Config.getCartUrl);
+    var url = Uri.https(Config.apiUrl, Config.getCartUrl); // Sử dụng Uri.https
     var response = await http.get(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -48,8 +45,7 @@ class CartHelper {
       List<Product> cart = [];
 
       var products = jsonData[0]['products'];
-      cart = List<Product>.from(
-          products.map((product) => Product.fromJson(product)));
+      cart = List<Product>.from(products.map((product) => Product.fromJson(product)));
 
       return cart;
     } else {
@@ -62,10 +58,10 @@ class CartHelper {
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'token': 'Bearer $token'
+      'Authorization': 'Bearer $token', // Sử dụng header Authorization
     };
 
-    var url = Uri.http(Config.apiUrl, "${Config.addCartUrl}/$id");
+    var url = Uri.https(Config.apiUrl, "${Config.addCartUrl}/$id"); // Sử dụng Uri.https
     var response = await client.delete(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -75,17 +71,16 @@ class CartHelper {
     }
   }
 
-  //GET CART HELPER
-
+  // GET ORDERS HELPER
   static Future<List<PaidOrders>> getOrders() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'token': 'Bearer $token'
+      'Authorization': 'Bearer $token', // Sử dụng header Authorization
     };
 
-    var url = Uri.http(Config.apiUrl, Config.orders);
+    var url = Uri.https(Config.apiUrl, Config.orders); // Sử dụng Uri.https
     var response = await http.get(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -93,7 +88,7 @@ class CartHelper {
 
       return products;
     } else {
-      throw Exception('Failed to get a cart');
+      throw Exception('Failed to get orders');
     }
   }
 }

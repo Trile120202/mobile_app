@@ -29,7 +29,7 @@ class Products {
 
   factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
-      id: json['id'] ?? '',
+      id: json['_id'] ?? '',
       name: json['name'] ?? '',
       category: json['category'] ?? '',
       imageUrl: json['imageUrl'] != null
@@ -43,7 +43,7 @@ class Products {
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "_id": id,
         "name": name,
         "title": title,
         "category": category,

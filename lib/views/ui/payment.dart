@@ -32,8 +32,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller =
-        WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
@@ -47,15 +46,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
           onPageFinished: (String url) {
             // debugPrint('Page finished loading: $url');
           },
-//           onWebResourceError: (WebResourceError error) {
-//             debugPrint('''
-// Page resource error:
-//   code: ${error.errorCode}
-//   description: ${error.description}
-//   errorType: ${error.errorType}
-//   isForMainFrame: ${error.isForMainFrame}
-//           ''');
-//           },
           onNavigationRequest: (NavigationRequest request) {
             debugPrint('allowing navigation to ${request.url}');
             return NavigationDecision.navigate;
@@ -63,14 +53,10 @@ class _PaymentWebViewState extends State<PaymentWebView> {
           onUrlChange: (UrlChange change) {
             if (change.url!.contains("checkout-success")) {
               paymentNotifier.paymentUrl = '';
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Successful()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const Successful()));
             } else if (change.url!.contains("cancel")) {
               paymentNotifier.paymentUrl = '';
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PaymentFailed()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentFailed()));
             }
             debugPrint('url change to ${change.url}');
           },
@@ -89,8 +75,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
-      (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
+      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     // #enddocregion platform_features
 

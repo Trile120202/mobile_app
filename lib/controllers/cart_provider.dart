@@ -18,12 +18,18 @@ class CartProvider with ChangeNotifier {
     }
   }
 
+  int? _productIndex;
+  int get productIndex => _productIndex ?? 0;
+  set setProductIndex(int newState) {
+    _productIndex = newState;
+    notifyListeners();
+  }
+
   List<Product> checkOutList = [];
 
   List<Product> get getCheckOutList => checkOutList;
 
   set setCheckOut(Product newProduct) {
-    // ignore: collection_methods_unrelated_type
     if (checkOutList.contains(newProduct.id)) {
       checkOutList.removeWhere((element) => element.id == newProduct.id);
     } else {
