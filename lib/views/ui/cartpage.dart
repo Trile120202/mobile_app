@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hive/hive.dart';
 import 'package:pet_gear_pro/controllers/cart_provider.dart';
 import 'package:pet_gear_pro/controllers/payment_provider.dart';
 import 'package:pet_gear_pro/models/cart/get_products.dart';
@@ -39,7 +37,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     var paymentNotifier = Provider.of<PaymentNotifier>(context);
-    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    var cartProvider = Provider.of<CartProvider>(context);
     return paymentNotifier.paymentUrl.contains("https")
         ? const PaymentWebView()
         : Scaffold(
@@ -92,8 +90,7 @@ class _CartPageState extends State<CartPage> {
 
                                       return GestureDetector(
                                         onTap: () {
-                                          cartProvider.setProductIndex = index;
-                                          cartProvider.checkOutList.insert(0, data);
+                                          cartProvider.toggleCheckOutProduct(data);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8),
@@ -125,12 +122,16 @@ class _CartPageState extends State<CartPage> {
                                                           Positioned(
                                                             top: -2,
                                                             child: GestureDetector(
-                                                              onTap: () async {},
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  cartProvider.toggleCheckOutProduct(data);
+                                                                });
+                                                              },
                                                               child: SizedBox(
                                                                 height: 30.h,
                                                                 width: 30.w,
                                                                 child: Icon(
-                                                                  cartProvider.productIndex == index ? Feather.check_square : Feather.square,
+                                                                  cartProvider.getCheckOutList.contains(data) ? Feather.check_square : Feather.square,
                                                                   size: 20,
                                                                   color: Colors.black,
                                                                 ),
@@ -142,8 +143,9 @@ class _CartPageState extends State<CartPage> {
                                                               child: GestureDetector(
                                                                 onTap: () async {
                                                                   await CartHelper.deleteItem(data.id);
-                                                                  _cartList = CartHelper.getCart();
-                                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CartPage()));
+                                                                  setState(() {
+                                                                    _cartList = CartHelper.getCart();
+                                                                  });
                                                                 },
                                                                 child: Container(
                                                                   width: 40,
@@ -181,7 +183,7 @@ class _CartPageState extends State<CartPage> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "\$${data.cartItem.price}",
+                                                                  "\$${double.parse(data.cartItem.price) * cartProvider.getQuantity(data)}",
                                                                   style: appstyle(18, Colors.black, FontWeight.w600),
                                                                 ),
                                                                 const SizedBox(
@@ -205,7 +207,7 @@ class _CartPageState extends State<CartPage> {
                                                             children: [
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.decrement();
+                                                                    cartProvider.decrementQuantity(data);
                                                                   },
                                                                   child: const Icon(
                                                                     AntDesign.minussquare,
@@ -213,7 +215,7 @@ class _CartPageState extends State<CartPage> {
                                                                     color: Colors.grey,
                                                                   )),
                                                               Text(
-                                                                cartProvider.counter.toString(),
+                                                                cartProvider.getQuantity(data).toString(),
                                                                 style: appstyle(
                                                                   16,
                                                                   Colors.black,
@@ -222,7 +224,7 @@ class _CartPageState extends State<CartPage> {
                                                               ),
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.increment();
+                                                                    cartProvider.incrementQuantity(data);
                                                                   },
                                                                   child: const Icon(
                                                                     AntDesign.plussquare,
@@ -247,19 +249,26 @@ class _CartPageState extends State<CartPage> {
                       )
                     ],
                   ),
-                  cartProvider.checkOutList.isNotEmpty
+                  cartProvider.getCheckOutList.isNotEmpty
                       ? Align(
                           alignment: Alignment.bottomCenter,
                           child: CheckoutButton(
                               onTap: () async {
                                 final SharedPreferences prefs = await SharedPreferences.getInstance();
                                 String userId = prefs.getString('userId') ?? "";
-                                Order model = Order(userId: userId, cartItems: [
-                                  CartItem(name: checkout![0].cartItem.name, id: checkout![0].cartItem.id, price: checkout![0].cartItem.price, cartQuantity: 1)
-                                ]);
+                                Order model = Order(
+                                    userId: userId,
+                                    cartItems: cartProvider.getCheckOutList
+                                        .map((product) => CartItem(
+                                              name: product.cartItem.name,
+                                              id: product.cartItem.id,
+                                              price: product.cartItem.price,
+                                              cartQuantity: cartProvider.getQuantity(product),
+                                            ))
+                                        .toList());
                                 PaymentHelper.payment(model).then((value) {
                                   paymentNotifier.paymentUrl = value;
-                                  // print(paymentNotifier.paymentUrl);
+                                  print(paymentNotifier.paymentUrl);
                                 });
                               },
                               label: "Proceed to Checkout"),
