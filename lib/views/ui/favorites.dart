@@ -54,10 +54,7 @@ class _FavoritesState extends State<Favorites> {
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.fromLTRB(16, 45, 0, 0),
                     height: MediaQuery.of(context).size.height * 0.4,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/images/petgear.png"),
-                            fit: BoxFit.cover)),
+                    decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/petgear.png"), fit: BoxFit.cover)),
                     child: Container(
                       margin: EdgeInsets.only(top: 20.h),
                       padding: const EdgeInsets.all(8.0),
@@ -78,24 +75,15 @@ class _FavoritesState extends State<Favorites> {
                           return Padding(
                             padding: const EdgeInsets.all(8),
                             child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(12)),
+                              borderRadius: const BorderRadius.all(Radius.circular(12)),
                               child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.11,
+                                height: MediaQuery.of(context).size.height * 0.11,
                                 width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade500,
-                                          spreadRadius: 5,
-                                          blurRadius: 0.3,
-                                          offset: const Offset(0, 1)),
-                                    ]),
+                                decoration: BoxDecoration(color: Colors.grey.shade100, boxShadow: [
+                                  BoxShadow(color: Colors.grey.shade500, spreadRadius: 5, blurRadius: 0.3, offset: const Offset(0, 1)),
+                                ]),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -109,41 +97,30 @@ class _FavoritesState extends State<Favorites> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 12, left: 20),
+                                          padding: const EdgeInsets.only(top: 12, left: 20),
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 products['name'],
-                                                style: appstyle(
-                                                    16,
-                                                    Colors.black,
-                                                    FontWeight.bold),
+                                                style: appstyle(16, Colors.black, FontWeight.bold),
                                               ),
                                               const SizedBox(
                                                 height: 5,
                                               ),
                                               Text(
                                                 products['category'],
-                                                style: appstyle(14, Colors.grey,
-                                                    FontWeight.w600),
+                                                style: appstyle(14, Colors.grey, FontWeight.w600),
                                               ),
                                               const SizedBox(
                                                 height: 5,
                                               ),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     "\$ ${products['price']}",
-                                                    style: appstyle(
-                                                        18,
-                                                        Colors.black,
-                                                        FontWeight.w600),
+                                                    style: appstyle(18, Colors.black, FontWeight.w600),
                                                   ),
                                                 ],
                                               ),
@@ -157,14 +134,8 @@ class _FavoritesState extends State<Favorites> {
                                       child: GestureDetector(
                                         onTap: () {
                                           _deleteCart(products['key']);
-                                          favoritesNotifier.ids.removeWhere(
-                                              (element) =>
-                                                  element == products['id']);
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const MainScreen()));
+                                          favoritesNotifier.ids.removeWhere((element) => element == products['id']);
+                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
                                         },
                                         child: const Icon(
                                           Ionicons.md_heart_dislike,

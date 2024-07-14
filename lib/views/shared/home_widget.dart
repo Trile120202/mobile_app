@@ -52,7 +52,7 @@ class HomeWidget extends StatelessWidget {
                                           )));
                             },
                             child: ProductCard(
-                              price: "\$${item.price}",
+                              price: "${item.price} VNĐ",
                               category: item.category,
                               id: item.id,
                               name: item.name,

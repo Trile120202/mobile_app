@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pet_gear_pro/models/auth/login_model.dart';
+import 'package:pet_gear_pro/models/auth/profile_update_model.dart';
 import 'package:pet_gear_pro/models/auth/signup_model.dart';
 import 'package:pet_gear_pro/models/auth_response/login_res_model.dart';
 import 'package:pet_gear_pro/models/auth_response/profile_model.dart';
@@ -17,8 +18,7 @@ class AuthHelper {
     };
 
     var url = Uri.parse('https://${Config.apiUrl}${Config.loginUrl}');
-    var response = await client.post(url,
-        headers: requestHeaders, body: jsonEncode(model.toJson()));
+    var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model.toJson()));
 
     print('Request: ${jsonEncode(model.toJson())}');
     print('Response: ${response.statusCode} ${response.body}');
@@ -47,8 +47,7 @@ class AuthHelper {
     };
 
     var url = Uri.parse('https://${Config.apiUrl}${Config.signupUrl}');
-    var response = await client.post(url,
-        headers: requestHeaders, body: jsonEncode(model.toJson()));
+    var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model.toJson()));
 
     print('Request: ${jsonEncode(model.toJson())}');
     print('Response: ${response.statusCode} ${response.body}');
@@ -61,6 +60,24 @@ class AuthHelper {
     }
   }
 
+  static Future<bool> updateUserProfile(ProfileUpdateReq profile) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    var url = Uri.parse('https://${Config.apiUrl}${Config.updateprofile}');
+    var response = await client.put(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(profile.toJson()),
+    );
+    return response.statusCode == 200;
+  }
+
+//Get User infor
   static Future<ProfileRes> getProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');

@@ -1,4 +1,3 @@
-// TODO Implement this library.
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_gear_pro/controllers/login_provider.dart';
@@ -51,20 +50,12 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.black,
             body: Container(
               padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 60.h),
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      opacity: 0.5, image: AssetImage("assets/images/bg.png"))),
+              decoration: const BoxDecoration(image: DecorationImage(opacity: 0.5, image: AssetImage("assets/images/bg.png"))),
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  ReusableText(
-                      text: "Welcome!",
-                      style:
-                          appstyle(30, Color(kLight.value), FontWeight.w600)),
-                  ReusableText(
-                      text: "Fill these details to login you account",
-                      style:
-                          appstyle(16, Color(kLight.value), FontWeight.normal)),
+                  ReusableText(text: "Welcome!", style: appstyle(30, Color(kLight.value), FontWeight.w600)),
+                  ReusableText(text: "Fill these details to login you account", style: appstyle(16, Color(kLight.value), FontWeight.normal)),
                   const SizedBox(height: 50),
                   CustomTextField(
                       keyboard: TextInputType.emailAddress,
@@ -88,9 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                           authNotifier.isObsecure = !authNotifier.isObsecure;
                         },
                         child: Icon(
-                          authNotifier.isObsecure
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                          authNotifier.isObsecure ? Icons.visibility_off : Icons.visibility,
                           color: Color(kDark.value),
                         ),
                       ),
@@ -106,15 +95,11 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignupPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupPage()));
                       },
                       child: ReusableText(
                         text: "Register",
-                        style:
-                            appstyle(14, Color(kLight.value), FontWeight.w500),
+                        style: appstyle(14, Color(kLight.value), FontWeight.w500),
                       ),
                     ),
                   ),
@@ -123,37 +108,40 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       formValidation();
                       if (validation) {
-                        LoginModel model = LoginModel(
-                            email: email.text, password: password.text);
+                        LoginModel model = LoginModel(email: email.text, password: password.text);
 
                         authNotifier.userLogin(model).then((response) {
                           if (response == true) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MainScreen()));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Login Successful!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const MainScreen()));
                           } else {
-                            print("Failed to login please retry");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Failed to login, please retry'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           }
                         });
                       } else {
-                        print("The form is not valid");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('The form is not valid'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     },
                     child: Container(
                       height: 60,
-                      width: width * 0.8,
-                      decoration: BoxDecoration(
-                          color: Color(kLight.value),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(12))),
-                      child: Center(
-                          child: authNotifier.processing
-                              ? const CircularProgressIndicator.adaptive()
-                              : ReusableText(
-                                  text: "L O G I N",
-                                  style: appstyle(
-                                      18, Colors.black, FontWeight.bold))),
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      decoration: BoxDecoration(color: Color(kLight.value), borderRadius: const BorderRadius.all(Radius.circular(12))),
+                      child: Center(child: authNotifier.processing ? const CircularProgressIndicator.adaptive() : ReusableText(text: "L O G I N", style: appstyle(18, Colors.black, FontWeight.bold))),
                     ),
                   )
                 ],

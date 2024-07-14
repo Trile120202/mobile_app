@@ -42,8 +42,7 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   getFavorites() {
-    var favoritesNotifier =
-        Provider.of<FavoritesNotifier>(context, listen: false);
+    var favoritesNotifier = Provider.of<FavoritesNotifier>(context, listen: false);
     final favData = _favBox.keys.map((key) {
       final item = _favBox.get(key);
       return {
@@ -52,8 +51,15 @@ class _ProductPageState extends State<ProductPage> {
       };
     }).toList();
     favoritesNotifier.favorites = favData.toList();
-    favoritesNotifier.ids =
-        favoritesNotifier.favorites.map((item) => item['id']).toList();
+    favoritesNotifier.ids = favoritesNotifier.favorites.map((item) => item['id']).toList();
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -106,8 +112,7 @@ class _ProductPageState extends State<ProductPage> {
                             return Stack(
                               children: [
                                 Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.39,
+                                  height: MediaQuery.of(context).size.height * 0.39,
                                   width: MediaQuery.of(context).size.width,
                                   color: Colors.grey.shade300,
                                   child: CachedNetworkImage(
@@ -121,60 +126,37 @@ class _ProductPageState extends State<ProductPage> {
                                     child: GestureDetector(
                                       onTap: () {
                                         if (loginNotifier.loggedIn == true) {
-                                          if (favoritesNotifier.ids
-                                              .contains(widget.products.id)) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Favorites()));
+                                          if (favoritesNotifier.ids.contains(widget.products.id)) {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const Favorites()));
                                           } else {
                                             _createFav({
                                               "id": widget.products.id,
                                               "name": widget.products.name,
-                                              "category":
-                                                  widget.products.category,
-                                              "imageUrl":
-                                                  widget.products.imageUrl[0],
+                                              "category": widget.products.category,
+                                              "imageUrl": widget.products.imageUrl[0],
                                               "price": widget.products.price,
                                             });
                                           }
                                         } else {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginPage()));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                                         }
                                       },
-                                      child: favoritesNotifier.ids
-                                              .contains(widget.products.id)
-                                          ? const Icon(AntDesign.heart)
-                                          : const Icon(AntDesign.hearto),
+                                      child: favoritesNotifier.ids.contains(widget.products.id) ? const Icon(AntDesign.heart) : const Icon(AntDesign.hearto),
                                     )),
                                 Positioned(
                                     bottom: 0,
                                     right: 0,
                                     left: 0,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.3,
+                                    height: MediaQuery.of(context).size.height * 0.3,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: List<Widget>.generate(
                                           widget.products.imageUrl.length,
                                           (index) => Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 4),
+                                                padding: const EdgeInsets.symmetric(horizontal: 4),
                                                 child: CircleAvatar(
                                                   radius: 5,
-                                                  backgroundColor:
-                                                      productNotifier
-                                                                  .activepage !=
-                                                              index
-                                                          ? Colors.grey
-                                                          : Colors.black,
+                                                  backgroundColor: productNotifier.activepage != index ? Colors.grey : Colors.black,
                                                 ),
                                               )),
                                     )),
@@ -201,15 +183,13 @@ class _ProductPageState extends State<ProductPage> {
                                   Text(
                                     widget.products.name,
                                     maxLines: 1,
-                                    style: appstyle(
-                                        40, Colors.black, FontWeight.bold),
+                                    style: appstyle(40, Colors.black, FontWeight.bold),
                                   ),
                                   Row(
                                     children: [
                                       Text(
                                         widget.products.category,
-                                        style: appstyle(
-                                            20, Colors.grey, FontWeight.w500),
+                                        style: appstyle(20, Colors.grey, FontWeight.w500),
                                       ),
                                       const SizedBox(
                                         width: 20,
@@ -221,8 +201,7 @@ class _ProductPageState extends State<ProductPage> {
                                         allowHalfRating: true,
                                         itemCount: 5,
                                         itemSize: 22,
-                                        itemPadding: const EdgeInsets.symmetric(
-                                            horizontal: 1),
+                                        itemPadding: const EdgeInsets.symmetric(horizontal: 1),
                                         itemBuilder: (context, _) => const Icon(
                                           Icons.star,
                                           size: 18,
@@ -236,13 +215,11 @@ class _ProductPageState extends State<ProductPage> {
                                     height: 20,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "\$${widget.products.price}",
-                                        style: appstyle(
-                                            26, Colors.black, FontWeight.w600),
+                                        "${widget.products.price} \VNĐ",
+                                        style: appstyle(26, Colors.black, FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -258,13 +235,11 @@ class _ProductPageState extends State<ProductPage> {
                                     height: 10,
                                   ),
                                   SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
+                                    width: MediaQuery.of(context).size.width * 0.8,
                                     child: Text(
                                       widget.products.title,
                                       maxLines: 2,
-                                      style: appstyle(
-                                          26, Colors.black, FontWeight.w700),
+                                      style: appstyle(26, Colors.black, FontWeight.w700),
                                     ),
                                   ),
                                   const SizedBox(
@@ -274,8 +249,7 @@ class _ProductPageState extends State<ProductPage> {
                                     widget.products.description,
                                     textAlign: TextAlign.justify,
                                     maxLines: 4,
-                                    style: appstyle(
-                                        14, Colors.black, FontWeight.normal),
+                                    style: appstyle(14, Colors.black, FontWeight.normal),
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -287,16 +261,11 @@ class _ProductPageState extends State<ProductPage> {
                                       child: CheckoutButton(
                                         onTap: () async {
                                           if (loginNotifier.loggedIn == true) {
-                                            AddToCart model = AddToCart(
-                                                cartItem: widget.products.id,
-                                                quantity: 1);
-                                            CartHelper.addToCart(model);
+                                            AddToCart model = AddToCart(cartItem: widget.products.id, quantity: 1);
+                                            await CartHelper.addToCart(model);
+                                            _showSnackbar(context, 'Added to Cart Successfully!');
                                           } else {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const LoginPage()));
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                                           }
                                         },
                                         label: "Add to Cart",

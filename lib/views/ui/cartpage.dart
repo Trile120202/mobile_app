@@ -15,6 +15,8 @@ import 'package:pet_gear_pro/views/ui/payment.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// CartPage.dart
+
 class CartPage extends StatefulWidget {
   CartPage({super.key});
 
@@ -70,20 +72,23 @@ class _CartPageState extends State<CartPage> {
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.65,
-                        child: FutureBuilder(
+                        child: FutureBuilder<List<Product>>(
                             future: _cartList,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(child: CircularProgressIndicator.adaptive());
-                              } else if (snapshot.hasError) {
+                              } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
                                 return Center(
-                                  child: ReusableText(text: "NOTHING HERE, LET'S BUY SOME", style: appstyle(18, Colors.black, FontWeight.bold)),
+                                  child: ReusableText(
+                                    text: "There Nothing Here. Let's Buy SomeThing",
+                                    style: appstyle(18, Colors.black, FontWeight.bold),
+                                  ),
                                 );
                               } else {
-                                final products = snapshot.data;
+                                final products = snapshot.data!;
                                 checkout = products;
                                 return ListView.builder(
-                                    itemCount: products!.length,
+                                    itemCount: products.length,
                                     padding: EdgeInsets.zero,
                                     itemBuilder: (context, index) {
                                       final data = products[index];
@@ -146,6 +151,9 @@ class _CartPageState extends State<CartPage> {
                                                                   setState(() {
                                                                     _cartList = CartHelper.getCart();
                                                                   });
+                                                                  if (await CartHelper.getCart().then((cart) => cart.isEmpty)) {
+                                                                    cartProvider.clearCart();
+                                                                  }
                                                                 },
                                                                 child: Container(
                                                                   width: 40,
@@ -183,7 +191,7 @@ class _CartPageState extends State<CartPage> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "\$${double.parse(data.cartItem.price) * cartProvider.getQuantity(data)}",
+                                                                  "${double.parse(data.cartItem.price) * cartProvider.getQuantity(data)} \VNĐ",
                                                                   style: appstyle(18, Colors.black, FontWeight.w600),
                                                                 ),
                                                                 const SizedBox(

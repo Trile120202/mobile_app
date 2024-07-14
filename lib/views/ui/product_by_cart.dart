@@ -6,7 +6,6 @@ import 'package:pet_gear_pro/views/shared/appstyle.dart';
 import 'package:pet_gear_pro/views/shared/category_btn.dart';
 import 'package:pet_gear_pro/views/shared/custom_space.dart';
 import 'package:pet_gear_pro/views/shared/latest_product.dart';
-import 'package:pet_gear_pro/views/shared/category_btn.dart';
 
 class ProductByCat extends StatefulWidget {
   const ProductByCat({super.key, required this.tabIndex});
@@ -17,10 +16,8 @@ class ProductByCat extends StatefulWidget {
   State<ProductByCat> createState() => _ProductByCatState();
 }
 
-class _ProductByCatState extends State<ProductByCat>
-    with TickerProviderStateMixin {
-  late final TabController _tabController =
-      TabController(length: 3, vsync: this);
+class _ProductByCatState extends State<ProductByCat> with TickerProviderStateMixin {
+  late final TabController _tabController = TabController(length: 3, vsync: this);
 
   late Future<List<Products>> _dog;
   late Future<List<Products>> _cat;
@@ -132,10 +129,7 @@ class _ProductByCatState extends State<ProductByCat>
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.175,
-                  left: 16,
-                  right: 12),
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.175, left: 16, right: 12),
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 child: TabBarView(controller: _tabController, children: [
@@ -242,16 +236,7 @@ class _ProductByCatState extends State<ProductByCat>
                           style: appstyle(20, Colors.black, FontWeight.bold),
                         ),
                         CustomSpacer(),
-                        Slider(
-                            value: _value,
-                            activeColor: Colors.black,
-                            inactiveColor: Colors.grey,
-                            thumbColor: Colors.black,
-                            max: 500,
-                            divisions: 50,
-                            label: _value.toString(),
-                            secondaryTrackValue: 200,
-                            onChanged: (double value) {}),
+                        Slider(value: _value, activeColor: Colors.black, inactiveColor: Colors.grey, thumbColor: Colors.black, max: 500, divisions: 50, label: _value.toString(), secondaryTrackValue: 200, onChanged: (double value) {}),
                         CustomSpacer(),
                         Text(
                           "Brand",
@@ -270,10 +255,7 @@ class _ProductByCatState extends State<ProductByCat>
                                 return Padding(
                                   padding: const EdgeInsets.all(8),
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey.shade200,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(12))),
+                                    decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: const BorderRadius.all(Radius.circular(12))),
                                     child: Image.asset(
                                       brand[index],
                                       height: 60,

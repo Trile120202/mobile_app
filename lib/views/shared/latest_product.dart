@@ -28,11 +28,7 @@ class latestProducts extends StatelessWidget {
                 mainAxisSpacing: 16,
                 itemCount: dog!.length,
                 scrollDirection: Axis.vertical,
-                staggeredTileBuilder: (index) => StaggeredTile.extent(
-                    (index % 2 == 0) ? 1 : 1,
-                    (index % 4 == 1 || index % 4 == 3)
-                        ? MediaQuery.of(context).size.height * 0.35
-                        : MediaQuery.of(context).size.height * 0.305),
+                staggeredTileBuilder: (index) => StaggeredTile.extent((index % 2 == 0) ? 1 : 1, (index % 4 == 1 || index % 4 == 3) ? MediaQuery.of(context).size.height * 0.35 : MediaQuery.of(context).size.height * 0.305),
                 itemBuilder: (context, index) {
                   final item = snapshot.data![index];
                   return GestureDetector(
@@ -44,10 +40,7 @@ class latestProducts extends StatelessWidget {
                                     products: item,
                                   )));
                     },
-                    child: StaggerTile(
-                        imageUrl: item.imageUrl[1],
-                        name: item.name,
-                        price: "\$${item.price}"),
+                    child: StaggerTile(imageUrl: item.imageUrl[1], name: item.name, price: "${item.price} \VNĐ"),
                   );
                 });
           }

@@ -15,10 +15,10 @@ class CartHelper {
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // Sử dụng header Authorization
+      'Authorization': 'Bearer $token',
     };
 
-    var url = Uri.https(Config.apiUrl, Config.addCartUrl); // Sử dụng Uri.https
+    var url = Uri.https(Config.apiUrl, Config.addCartUrl);
     var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model.toJson()));
     print(response.statusCode);
     if (response.statusCode == 200) {
@@ -34,10 +34,10 @@ class CartHelper {
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // Sử dụng header Authorization
+      'Authorization': 'Bearer $token',
     };
 
-    var url = Uri.https(Config.apiUrl, Config.getCartUrl); // Sử dụng Uri.https
+    var url = Uri.https(Config.apiUrl, Config.getCartUrl);
     var response = await http.get(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -58,10 +58,10 @@ class CartHelper {
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // Sử dụng header Authorization
+      'Authorization': 'Bearer $token',
     };
 
-    var url = Uri.https(Config.apiUrl, "${Config.addCartUrl}/$id"); // Sử dụng Uri.https
+    var url = Uri.https(Config.apiUrl, "${Config.addCartUrl}/$id");
     var response = await client.delete(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -72,23 +72,33 @@ class CartHelper {
   }
 
   // GET ORDERS HELPER
+
   static Future<List<PaidOrders>> getOrders() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('Token is null');
+    }
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // Sử dụng header Authorization
+      'Authorization': 'Bearer $token'
     };
 
-    var url = Uri.https(Config.apiUrl, Config.orders); // Sử dụng Uri.https
+    var url = Uri.https(Config.apiUrl, Config.orders);
     var response = await http.get(url, headers: requestHeaders);
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}'); // Ghi log nội dung phản hồi
 
     if (response.statusCode == 200) {
       var products = paidOrdersFromJson(response.body);
-
       return products;
+    } else if (response.statusCode == 401) {
+      print('Error: Authentication failed. Please check the token and try again.');
+      throw Exception('Authentication failed. Please check the token and try again.');
     } else {
-      throw Exception('Failed to get orders');
+      throw Exception('Failed to get orders: ${response.body}');
     }
   }
 }

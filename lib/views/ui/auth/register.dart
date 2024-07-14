@@ -20,6 +20,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController username = TextEditingController();
+  final TextEditingController location = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -27,6 +28,7 @@ class _SignupPageState extends State<SignupPage> {
     email.dispose();
     password.dispose();
     username.dispose();
+    location.dispose();
     super.dispose();
   }
 
@@ -98,15 +100,26 @@ class _SignupPageState extends State<SignupPage> {
                         authNotifier.isObsecure = !authNotifier.isObsecure;
                       },
                       child: Icon(
-                        authNotifier.isObsecure
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                        authNotifier.isObsecure ? Icons.visibility_off : Icons.visibility,
                         color: Color(kDark.value),
                       ),
                     ),
                     validator: (password) {
                       if (password!.isEmpty || password.length < 7) {
                         return "Please enter a valid password";
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextField(
+                    keyboard: TextInputType.streetAddress,
+                    hintText: "Location",
+                    controller: location,
+                    validator: (location) {
+                      if (location!.isEmpty) {
+                        return "Please enter a location here";
                       } else {
                         return null;
                       }
@@ -121,8 +134,7 @@ class _SignupPageState extends State<SignupPage> {
                       },
                       child: ReusableText(
                         text: "Login",
-                        style:
-                            appstyle(14, Color(kLight.value), FontWeight.w500),
+                        style: appstyle(14, Color(kLight.value), FontWeight.w500),
                       ),
                     ),
                   ),
@@ -134,6 +146,7 @@ class _SignupPageState extends State<SignupPage> {
                           email: email.text,
                           password: password.text,
                           username: username.text,
+                          location: location.text,
                         );
 
                         authNotifier.registerUser(model).then((response) {
@@ -151,8 +164,7 @@ class _SignupPageState extends State<SignupPage> {
                           }
                         }).catchError((error) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('An error occurred: $error')),
+                            SnackBar(content: Text('An error occurred: $error')),
                           );
                         });
                       }
@@ -162,16 +174,14 @@ class _SignupPageState extends State<SignupPage> {
                       width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
                         color: Color(kLight.value),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12)),
+                        borderRadius: const BorderRadius.all(Radius.circular(12)),
                       ),
                       child: Center(
                         child: authNotifier.processing
                             ? const CircularProgressIndicator.adaptive()
                             : ReusableText(
                                 text: "S I G N U P",
-                                style:
-                                    appstyle(18, Colors.black, FontWeight.bold),
+                                style: appstyle(18, Colors.black, FontWeight.bold),
                               ),
                       ),
                     ),
@@ -185,3 +195,4 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+ 

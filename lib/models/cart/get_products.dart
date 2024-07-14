@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-List<GetCart> getCartFromJson(String str) =>
-    List<GetCart>.from(json.decode(str).map((x) => GetCart.fromJson(x)));
+List<GetCart> getCartFromJson(String str) => List<GetCart>.from(json.decode(str).map((x) => GetCart.fromJson(x)));
 
 class GetCart {
   List<Product> products;
@@ -11,8 +10,7 @@ class GetCart {
   });
 
   factory GetCart.fromJson(Map<String, dynamic> json) => GetCart(
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
+        products: List<Product>.from(json["products"].map((x) => Product.fromJson(x))),
       );
 }
 

@@ -10,13 +10,7 @@ import 'package:pet_gear_pro/views/ui/favorites.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
-  const ProductCard(
-      {super.key,
-      required this.price,
-      required this.category,
-      required this.id,
-      required this.name,
-      required this.image});
+  const ProductCard({super.key, required this.price, required this.category, required this.id, required this.name, required this.image});
 
   final String price;
   final String category;
@@ -37,8 +31,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   getFavorites() {
-    var favoritesNotifier =
-        Provider.of<FavoritesNotifier>(context, listen: false);
+    var favoritesNotifier = Provider.of<FavoritesNotifier>(context, listen: false);
     final favData = _favBox.keys.map((key) {
       final item = _favBox.get(key);
       return {
@@ -48,8 +41,7 @@ class _ProductCardState extends State<ProductCard> {
     }).toList();
 
     favoritesNotifier.favorites = favData.toList();
-    favoritesNotifier.ids =
-        favoritesNotifier.favorites.map((item) => item['id']).toList();
+    favoritesNotifier.ids = favoritesNotifier.favorites.map((item) => item['id']).toList();
   }
 
   @override
@@ -63,11 +55,7 @@ class _ProductCardState extends State<ProductCard> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width * 0.6,
           decoration: const BoxDecoration(boxShadow: [
-            BoxShadow(
-                color: Colors.white,
-                spreadRadius: 1,
-                blurRadius: 0.6,
-                offset: Offset(1, 1))
+            BoxShadow(color: Colors.white, spreadRadius: 1, blurRadius: 0.6, offset: Offset(1, 1))
           ]),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,27 +64,19 @@ class _ProductCardState extends State<ProductCard> {
                 children: [
                   Container(
                     height: MediaQuery.of(context).size.height * 0.23,
-                    decoration: BoxDecoration(
-                        image:
-                            DecorationImage(image: NetworkImage(widget.image))),
+                    decoration: BoxDecoration(image: DecorationImage(image: NetworkImage(widget.image))),
                   ),
                   Positioned(
                       right: 10,
                       top: 10,
                       child: Consumer<FavoritesNotifier>(
                         builder: (context, favoritesNotifier, child) {
-                          return Consumer<LoginNotifier>(
-                              builder: (context, loginNotifier, child) {
+                          return Consumer<LoginNotifier>(builder: (context, loginNotifier, child) {
                             return GestureDetector(
                               onTap: () async {
                                 if (loginNotifier.loggedIn == true) {
-                                  if (favoritesNotifier.ids
-                                      .contains(widget.id)) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Favorites()));
+                                  if (favoritesNotifier.ids.contains(widget.id)) {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Favorites()));
                                   } else {
                                     _createFav({
                                       "id": widget.id,
@@ -107,16 +87,10 @@ class _ProductCardState extends State<ProductCard> {
                                     });
                                   }
                                 } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                                 }
                               },
-                              child: favoritesNotifier.ids.contains(widget.id)
-                                  ? const Icon(AntDesign.heart)
-                                  : const Icon(AntDesign.hearto),
+                              child: favoritesNotifier.ids.contains(widget.id) ? const Icon(AntDesign.heart) : const Icon(AntDesign.hearto),
                             );
                           });
                         },
@@ -130,13 +104,11 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     Text(
                       widget.name,
-                      style: appstyleWHight(
-                          36, Colors.black, FontWeight.bold, 1.1),
+                      style: appstyleWHight(36, Colors.black, FontWeight.bold, 1.1),
                     ),
                     Text(
                       widget.category,
-                      style:
-                          appstyleWHight(18, Colors.grey, FontWeight.bold, 1.5),
+                      style: appstyleWHight(18, Colors.grey, FontWeight.bold, 1.5),
                     )
                   ],
                 ),

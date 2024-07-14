@@ -1,18 +1,13 @@
-// To parse this JSON data, do
-//
-//     final paidOrders = paidOrdersFromJson(jsonString);
-
 import 'dart:convert';
 
-List<PaidOrders> paidOrdersFromJson(String str) =>
-    List<PaidOrders>.from(json.decode(str).map((x) => PaidOrders.fromJson(x)));
+List<PaidOrders> paidOrdersFromJson(String str) => List<PaidOrders>.from(json.decode(str).map((x) => PaidOrders.fromJson(x)));
 
 class PaidOrders {
   String id;
   String userId;
   ProductId productId;
   int quantity;
-  int total;
+  double total;
   String deliveryStatus;
   String paymentStatus;
 
@@ -31,7 +26,7 @@ class PaidOrders {
         userId: json["userId"],
         productId: ProductId.fromJson(json["productId"]),
         quantity: json["quantity"],
-        total: json["total"],
+        total: json["total"].toDouble(),
         deliveryStatus: json["delivery_status"],
         paymentStatus: json["payment_status"],
       );

@@ -11,10 +11,12 @@ import 'package:pet_gear_pro/views/ui/non_user_page.dart';
 import 'package:pet_gear_pro/views/ui/orders/orders.dart';
 import 'package:pet_gear_pro/views/ui/payments/failed.dart';
 import 'package:pet_gear_pro/views/ui/payments/successful.dart';
+import 'package:pet_gear_pro/views/ui/profile_details.dart';
 import 'package:provider/provider.dart';
 import 'package:pet_gear_pro/models/auth_response/profile_model.dart';
 import 'package:pet_gear_pro/controllers/login_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pet_gear_pro/views/ui/profile_details.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -47,7 +49,15 @@ class _ProfilePageState extends State<ProfilePage> {
       profile = null;
     }
 
-    setState(() {}); // Ensure the state is updated after getting user info
+    setState(() {});
+  }
+
+  void showDevelopmentMessage(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Sorry, this feature is under development."),
+      ),
+    );
   }
 
   @override
@@ -90,9 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(
                           width: 5,
                         ),
-                        Text("VN",
-                            style:
-                                appstyle(16, Colors.black, FontWeight.normal)),
+                        Text("VN", style: appstyle(16, Colors.black, FontWeight.normal)),
                         const SizedBox(
                           width: 10,
                         ),
@@ -121,10 +129,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         return FutureBuilder<ProfileRes>(
                           future: profile,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator.adaptive());
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             } else if (snapshot.hasError) {
                               return Text("Error: ${snapshot.error}");
                             } else if (!snapshot.hasData) {
@@ -132,8 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             } else {
                               final userData = snapshot.data;
                               return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
@@ -143,8 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         width: 35,
                                         child: CircleAvatar(
                                           backgroundColor: Colors.grey.shade100,
-                                          backgroundImage: const AssetImage(
-                                              "assets/images/user.jpeg"),
+                                          backgroundImage: const AssetImage("assets/images/user.jpeg"),
                                         ),
                                       ),
                                       const SizedBox(
@@ -153,20 +157,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               userData?.username ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
+                                              style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                             Text(
                                               userData?.email ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
+                                              style: Theme.of(context).textTheme.bodySmall,
                                             ),
                                           ],
                                         ),
@@ -174,7 +173,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProfilePageDetails(),
+                                        ),
+                                      );
+                                    },
                                     child: const Icon(Feather.edit, size: 18),
                                   )
                                 ],
@@ -197,33 +203,21 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             TilesWidget(
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ProcessOrders()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProcessOrders()));
                               },
                               title: "My Orders",
-                              leading:
-                                  MaterialCommunityIcons.truck_fast_outline,
+                              leading: MaterialCommunityIcons.truck_fast_outline,
                             ),
                             TilesWidget(
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Favorites()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Favorites()));
                               },
                               title: "My Favorites",
                               leading: MaterialCommunityIcons.heart_outline,
                             ),
                             TilesWidget(
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CartPage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
                               },
                               title: "Cart",
                               leading: Fontisto.shopping_bag_1,
@@ -241,22 +235,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             TilesWidget(
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Successful()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const Successful()));
                               },
                               title: "Coupons",
                               leading: MaterialCommunityIcons.tag_outline,
                             ),
                             TilesWidget(
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PaymentFailed()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentFailed()));
                               },
                               title: "My Store",
                               leading: MaterialCommunityIcons.shopping_outline,
@@ -273,27 +259,30 @@ class _ProfilePageState extends State<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TilesWidget(
-                              OnTap: () {},
+                              OnTap: () {
+                                showDevelopmentMessage(context);
+                              },
                               title: "Shipping addresses",
                               leading: SimpleLineIcons.location_pin,
                             ),
-                            const TilesWidget(
+                            TilesWidget(
+                              OnTap: () {
+                                showDevelopmentMessage(context);
+                              },
                               title: "App Feedback",
                               leading: MaterialIcons.rss_feed,
                             ),
                             TilesWidget(
-                              OnTap: () {},
+                              OnTap: () {
+                                showDevelopmentMessage(context);
+                              },
                               title: "Settings",
                               leading: AntDesign.setting,
                             ),
                             TilesWidget(
                               OnTap: () {
                                 loginNotifier.logout();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
                               },
                               title: "Logout",
                               leading: AntDesign.logout,
