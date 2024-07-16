@@ -41,18 +41,18 @@ class CartProvider with ChangeNotifier {
   double get totalPrice {
     double total = 0.0;
     _productQuantities.forEach((product, quantity) {
-      total += double.parse(product.cartItem.price) * quantity;
+      total += double.parse(product.price) * quantity;
     });
     return total;
   }
 
   // Danh sách sản phẩm để thanh toán
-  List<Product> _checkOutList = [];
+  List<ProductItem> _checkOutList = [];
 
-  List<Product> get getCheckOutList => _checkOutList;
+  List<ProductItem> get getCheckOutList => _checkOutList;
 
   // Thêm hoặc xóa sản phẩm trong danh sách thanh toán
-  void toggleCheckOutProduct(Product newProduct) {
+  void toggleCheckOutProduct(ProductItem newProduct) {
     if (_checkOutList.any((element) => element.id == newProduct.id)) {
       _checkOutList.removeWhere((element) => element.id == newProduct.id);
     } else {

@@ -23,14 +23,13 @@ class AuthHelper {
     print('Request: ${jsonEncode(model.toJson())}');
     print('Response: ${response.statusCode} ${response.body}');
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201 || response.statusCode == 200) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var responseData = loginResponseModelFromJson(response.body);
       String userToken = responseData.token;
-      String userId = responseData.id;
 
       await prefs.setString('token', userToken);
-      await prefs.setString('userId', userId);
+
       await prefs.setBool('loggedIn', true);
 
       return true;
@@ -60,7 +59,7 @@ class AuthHelper {
     }
   }
 
-  static Future<bool> updateUserProfile(ProfileUpdateReq profile) async {
+  static Future<bool> updateUserProfile(Map<String, String> profile) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
@@ -69,12 +68,17 @@ class AuthHelper {
     };
 
     var url = Uri.parse('https://${Config.apiUrl}${Config.updateprofile}');
-    var response = await client.put(
+    var response = await client.post(
       url,
       headers: requestHeaders,
-      body: jsonEncode(profile.toJson()),
+      body: jsonEncode(profile),
     );
-    return response.statusCode == 200;
+
+    if (response.statusCode == 200||response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 //Get User infor
@@ -90,11 +94,12 @@ class AuthHelper {
     print('Get Profile URL: $url');
     print('Token: $token');
 
-    var response = await client.get(url, headers: requestHeaders);
-    print('Profile Response: ${response.statusCode} ${response.body}');
+    var response = await http.get(url, headers: requestHeaders);
 
     if (response.statusCode == 200) {
+      // print('--------------${response.body}');
       var profile = profileResFromJson(response.body);
+      print('Parsed Profile: ${profile.toJson()}');
       return profile;
     } else {
       throw Exception('Failed to get a profile');

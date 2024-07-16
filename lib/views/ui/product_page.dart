@@ -246,7 +246,7 @@ class _ProductPageState extends State<ProductPage> {
                                     height: 10,
                                   ),
                                   Text(
-                                    widget.products.description,
+                                    widget.products.description ?? "",
                                     textAlign: TextAlign.justify,
                                     maxLines: 4,
                                     style: appstyle(14, Colors.black, FontWeight.normal),
@@ -261,7 +261,7 @@ class _ProductPageState extends State<ProductPage> {
                                       child: CheckoutButton(
                                         onTap: () async {
                                           if (loginNotifier.loggedIn == true) {
-                                            AddToCart model = AddToCart(cartItem: widget.products.id, quantity: 1);
+                                            AddToCart model = AddToCart(productId: widget.products.id, quantity: 1);
                                             await CartHelper.addToCart(model);
                                             _showSnackbar(context, 'Added to Cart Successfully!');
                                           } else {

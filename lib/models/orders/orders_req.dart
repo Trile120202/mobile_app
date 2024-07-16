@@ -6,7 +6,7 @@ String orderToJson(Order data) => json.encode(data.toJson());
 
 class Order {
   String userId;
-  List<CartItem> cartItems;
+  List<CartItemABC> cartItems;
 
   Order({
     required this.userId,
@@ -15,7 +15,7 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
         userId: json["userId"],
-        cartItems: List<CartItem>.from(json["cartItems"].map((x) => CartItem.fromJson(x))),
+        cartItems: List<CartItemABC>.from(json["cartItems"].map((x) => CartItemABC.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -24,20 +24,20 @@ class Order {
       };
 }
 
-class CartItem {
+class CartItemABC {
   String name;
   String id;
   String price;
   int cartQuantity;
 
-  CartItem({
+  CartItemABC({
     required this.name,
     required this.id,
     required this.price,
     required this.cartQuantity,
   });
 
-  factory CartItem.fromJson(Map<String, dynamic> json) => CartItem(
+  factory CartItemABC.fromJson(Map<String, dynamic> json) => CartItemABC(
         name: json["name"],
         id: json["id"],
         price: json["price"],

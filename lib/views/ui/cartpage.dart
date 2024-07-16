@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -15,6 +17,9 @@ import 'package:pet_gear_pro/views/ui/payment.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/auth_response/profile_model.dart';
+import '../../services/auth_helper.dart';
+
 // CartPage.dart
 
 class CartPage extends StatefulWidget {
@@ -25,8 +30,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  late Future<List<Product>> _cartList;
-  List<Product>? checkout;
+  late Future<dynamic> _cartList;
+  List<ProductItem>? checkout;
   bool? isSelected = true;
   bool? isLogged;
 
@@ -72,43 +77,68 @@ class _CartPageState extends State<CartPage> {
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.65,
-                        child: FutureBuilder<List<Product>>(
+                        child: FutureBuilder(
                             future: _cartList,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator.adaptive());
-                              } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              } else if (snapshot.hasError ||
+                                  !snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
                                 return Center(
                                   child: ReusableText(
-                                    text: "There Nothing Here. Let's Buy SomeThing",
-                                    style: appstyle(18, Colors.black, FontWeight.bold),
+                                    text:
+                                        "There Nothing Here. Let's Buy SomeThing",
+                                    style: appstyle(
+                                        18, Colors.black, FontWeight.bold),
                                   ),
                                 );
                               } else {
                                 final products = snapshot.data!;
                                 checkout = products;
                                 return ListView.builder(
-                                    itemCount: products.length,
+                                    itemCount: products!.length,
                                     padding: EdgeInsets.zero,
                                     itemBuilder: (context, index) {
                                       final data = products[index];
 
                                       return GestureDetector(
                                         onTap: () {
-                                          cartProvider.toggleCheckOutProduct(data);
+                                          cartProvider
+                                              .toggleCheckOutProduct(data);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8),
                                           child: ClipRRect(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(12)),
                                             child: Container(
-                                              height: MediaQuery.of(context).size.height * 0.11,
-                                              width: MediaQuery.of(context).size.width,
-                                              decoration: BoxDecoration(color: Colors.grey.shade100, boxShadow: [
-                                                BoxShadow(color: Colors.grey.shade500, spreadRadius: 5, blurRadius: 0.3, offset: const Offset(0, 1)),
-                                              ]),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.11,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey.shade100,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors
+                                                            .grey.shade500,
+                                                        spreadRadius: 5,
+                                                        blurRadius: 0.3,
+                                                        offset:
+                                                            const Offset(0, 1)),
+                                                  ]),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -116,9 +146,15 @@ class _CartPageState extends State<CartPage> {
                                                         clipBehavior: Clip.none,
                                                         children: [
                                                           Padding(
-                                                            padding: const EdgeInsets.all(12),
-                                                            child: CachedNetworkImage(
-                                                              imageUrl: data.cartItem.imageUrl[0],
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(12),
+                                                            child:
+                                                                CachedNetworkImage(
+                                                              imageUrl: data
+                                                                  .product
+                                                                  .imageUrl[0]
+                                                                  .imageUrl,
                                                               width: 70,
                                                               height: 70,
                                                               fit: BoxFit.fill,
@@ -126,73 +162,125 @@ class _CartPageState extends State<CartPage> {
                                                           ),
                                                           Positioned(
                                                             top: -2,
-                                                            child: GestureDetector(
+                                                            child:
+                                                                GestureDetector(
                                                               onTap: () {
                                                                 setState(() {
-                                                                  cartProvider.toggleCheckOutProduct(data);
+                                                                  cartProvider
+                                                                      .toggleCheckOutProduct(
+                                                                          data);
                                                                 });
                                                               },
                                                               child: SizedBox(
                                                                 height: 30.h,
                                                                 width: 30.w,
                                                                 child: Icon(
-                                                                  cartProvider.getCheckOutList.contains(data) ? Feather.check_square : Feather.square,
+                                                                  cartProvider
+                                                                          .getCheckOutList
+                                                                          .contains(
+                                                                              data)
+                                                                      ? Feather
+                                                                          .check_square
+                                                                      : Feather
+                                                                          .square,
                                                                   size: 20,
-                                                                  color: Colors.black,
+                                                                  color: Colors
+                                                                      .black,
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
                                                           Positioned(
                                                               bottom: -2,
-                                                              child: GestureDetector(
-                                                                onTap: () async {
-                                                                  await CartHelper.deleteItem(data.id);
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap:
+                                                                    () async {
+                                                                  await CartHelper
+                                                                      .deleteItem(
+                                                                          data.id);
                                                                   setState(() {
-                                                                    _cartList = CartHelper.getCart();
+                                                                    _cartList =
+                                                                        CartHelper
+                                                                            .getCart();
                                                                   });
-                                                                  if (await CartHelper.getCart().then((cart) => cart.isEmpty)) {
-                                                                    cartProvider.clearCart();
+                                                                  if (await CartHelper
+                                                                          .getCart()
+                                                                      .then((cart) =>
+                                                                          cart.isEmpty)) {
+                                                                    cartProvider
+                                                                        .clearCart();
                                                                   }
                                                                 },
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   width: 40,
                                                                   height: 30,
-                                                                  decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.only(topRight: Radius.circular(12))),
-                                                                  child: const Icon(
-                                                                    AntDesign.delete,
+                                                                  decoration: const BoxDecoration(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      borderRadius:
+                                                                          BorderRadius.only(
+                                                                              topRight: Radius.circular(12))),
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .delete,
                                                                     size: 20,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ))
                                                         ],
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 12, left: 20),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 12,
+                                                                left: 20),
                                                         child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
-                                                              data.cartItem.name,
-                                                              style: appstyle(16, Colors.black, FontWeight.bold),
+                                                              data.product.name,
+                                                              style: appstyle(
+                                                                  16,
+                                                                  Colors.black,
+                                                                  FontWeight
+                                                                      .bold),
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
                                                             Text(
-                                                              data.cartItem.category,
-                                                              style: appstyle(14, Colors.grey, FontWeight.w600),
+                                                              data.product
+                                                                  .category,
+                                                              style: appstyle(
+                                                                  14,
+                                                                  Colors.grey,
+                                                                  FontWeight
+                                                                      .w600),
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
                                                             Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "${double.parse(data.cartItem.price) * cartProvider.getQuantity(data)} \VNĐ",
-                                                                  style: appstyle(18, Colors.black, FontWeight.w600),
+                                                                  "${double.parse(data.product.price) * cartProvider.getQuantity(data.product)} \VNĐ",
+                                                                  style: appstyle(
+                                                                      18,
+                                                                      Colors
+                                                                          .black,
+                                                                      FontWeight
+                                                                          .w600),
                                                                 ),
                                                                 const SizedBox(
                                                                   width: 30,
@@ -207,37 +295,61 @@ class _CartPageState extends State<CartPage> {
                                                   Row(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets.all(8.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
                                                         child: Container(
-                                                          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                          decoration: const BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          16))),
                                                           child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.decrementQuantity(data);
+                                                                    cartProvider
+                                                                        .decrementQuantity(
+                                                                            data.product);
                                                                   },
-                                                                  child: const Icon(
-                                                                    AntDesign.minussquare,
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .minussquare,
                                                                     size: 20,
-                                                                    color: Colors.grey,
+                                                                    color: Colors
+                                                                        .grey,
                                                                   )),
                                                               Text(
-                                                                cartProvider.getQuantity(data).toString(),
+                                                                cartProvider
+                                                                    .getQuantity(
+                                                                        data.product)
+                                                                    .toString(),
                                                                 style: appstyle(
                                                                   16,
                                                                   Colors.black,
-                                                                  FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                                 ),
                                                               ),
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.incrementQuantity(data);
+                                                                    cartProvider
+                                                                        .incrementQuantity(
+                                                                            data.product);
                                                                   },
-                                                                  child: const Icon(
-                                                                    AntDesign.plussquare,
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .plussquare,
                                                                     size: 20,
-                                                                    color: Colors.black,
+                                                                    color: Colors
+                                                                        .black,
                                                                   )),
                                                             ],
                                                           ),
@@ -262,21 +374,44 @@ class _CartPageState extends State<CartPage> {
                           alignment: Alignment.bottomCenter,
                           child: CheckoutButton(
                               onTap: () async {
-                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
                                 String userId = prefs.getString('userId') ?? "";
+                                ProfileRes profile =
+                                    await AuthHelper.getProfile();
+
+                                print(profile.id);
+                                print('${cartProvider.getCheckOutList.length}');
+
                                 Order model = Order(
                                     userId: userId,
                                     cartItems: cartProvider.getCheckOutList
-                                        .map((product) => CartItem(
-                                              name: product.cartItem.name,
-                                              id: product.cartItem.id,
-                                              price: product.cartItem.price,
-                                              cartQuantity: cartProvider.getQuantity(product),
+                                        .map((product) => CartItemABC(
+                                              name: product.product.name,
+                                              id: product.productId,
+                                              price: product.product.price,
+                                              cartQuantity: cartProvider
+                                                  .getQuantity(product.product),
                                             ))
                                         .toList());
-                                PaymentHelper.payment(model).then((value) {
+                                PaymentHelper.payment(model)
+                                    .then((value) async {
+                                  // print(model.toJson());
                                   paymentNotifier.paymentUrl = value;
-                                  print(paymentNotifier.paymentUrl);
+                                  // print(paymentNotifier.paymentUrl);
+                                  Map<String, dynamic> data = {
+                                    "userId": profile.id,
+                                    "cartItems": cartProvider.getCheckOutList
+                                        .map((product) => CartItemABC(
+                                              name: product.product.name,
+                                              id: product.productId,
+                                              price: product.product.price,
+                                              cartQuantity: cartProvider
+                                                  .getQuantity(product.product),
+                                            ))
+                                        .toList(),
+                                  };
+                                  await CartHelper.createOrders(data);
                                 });
                               },
                               label: "Proceed to Checkout"),
