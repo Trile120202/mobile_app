@@ -10,7 +10,7 @@ class CartHelper {
   static var client = http.Client();
 
   // Add to cart HELPER
-  static Future<bool> addToCart(AddToCart model) async {
+  static Future<bool> addToCart(Map<String, dynamic> model) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
@@ -19,7 +19,8 @@ class CartHelper {
     };
 
     var url = Uri.https(Config.apiUrl, Config.addCartUrl);
-    var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model.toJson()));
+    var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model));
+    print(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
@@ -29,8 +30,9 @@ class CartHelper {
   }
 
   // GET CART HELPER
-  static Future<List<Product>> getCart() async {
+  static Future<List<ProductItem>> getCart() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     String? token = prefs.getString('token');
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
@@ -38,15 +40,17 @@ class CartHelper {
     };
 
     var url = Uri.https(Config.apiUrl, Config.getCartUrl);
-    var response = await http.get(url, headers: requestHeaders);
-
-    if (response.statusCode == 200) {
+    var response = await http.post(url, headers: requestHeaders);
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var jsonData = json.decode(response.body);
-      List<Product> cart = [];
-
-      var products = jsonData[0]['products'];
-      cart = List<Product>.from(products.map((product) => Product.fromJson(product)));
-
+      List<ProductItem> cart = [];
+      var cartsData = jsonData['data'];
+      for (var cartData in cartsData) {
+        var cartItems = cartData['cartItems'];
+        for (var cartItem in cartItems) {
+          cart.add(ProductItem.fromJson(cartItem));
+        }
+      }
       return cart;
     } else {
       throw Exception('Failed to get a cart');
@@ -56,14 +60,22 @@ class CartHelper {
   static Future<bool> deleteItem(String id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+
+    var body = json.encode({
+      "productId": id
+    });
+
+    print(id);
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
 
-    var url = Uri.https(Config.apiUrl, "${Config.addCartUrl}/$id");
-    var response = await client.delete(url, headers: requestHeaders);
+    var url = Uri.https(Config.apiUrl, Config.deleteCartUrl);
+    var response = await client.post(url, headers: requestHeaders, body: body);
 
+    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -85,13 +97,13 @@ class CartHelper {
       'Authorization': 'Bearer $token'
     };
 
-    var url = Uri.https(Config.apiUrl, Config.orders);
-    var response = await http.get(url, headers: requestHeaders);
+    var url = Uri.https(Config.apiUrl, Config.getOrders);
+    var response = await http.post(url, headers: requestHeaders);
 
     print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}'); // Ghi log nội dung phản hồi
+    print('Response body: ${response.body}');
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var products = paidOrdersFromJson(response.body);
       return products;
     } else if (response.statusCode == 401) {
@@ -99,6 +111,35 @@ class CartHelper {
       throw Exception('Authentication failed. Please check the token and try again.');
     } else {
       throw Exception('Failed to get orders: ${response.body}');
+    }
+  }
+
+  static Future<bool> createOrders(Map<String, dynamic> data) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('Token is null');
+    }
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    var url = Uri.https(Config.apiUrl, Config.orders);
+    var response = await http.post(url, headers: requestHeaders, body: jsonEncode(data));
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else if (response.statusCode == 401) {
+      // print(
+      //     'Error: Authentication failed. Please check the token and try again.');
+      // throw Exception(
+      //     'Authentication failed. Please check the token and try again.');
+      return false;
+    } else {
+      throw Exception('Failed to get orders: ${response.body}');
+      return false;
     }
   }
 }

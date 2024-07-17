@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-List<Products> productsFromJson(String str) =>
-    List<Products>.from(json.decode(str).map((x) => Products.fromJson(x)));
+List<Products> productsFromJson(String str) => List<Products>.from(json.decode(str)['data']['products'].map((x) => Products.fromJson(x)));
 
-String productsToJson(List<Products> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String productsToJson(List<Products> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Products {
   Products({
@@ -24,32 +22,30 @@ class Products {
   final List<String> imageUrl;
   final String oldPrice;
   final String price;
-  final String description;
+  final String? description;
   final String title;
 
   factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
-      category: json['category'] ?? '',
-      imageUrl: json['imageUrl'] != null
-          ? List<String>.from(json['imageUrl'].map((x) => x))
-          : [],
+      id: json["id"] ?? '',
+      name: json["name"] ?? '',
+      category: json["category"] ?? '',
+      imageUrl: json["imageUrl"] != null ? List<String>.from(json["imageUrl"].map((x) => x)) : [],
       oldPrice: json["oldPrice"] ?? '',
       price: json["price"] ?? '',
-      description: json['description'] ?? '',
-      title: json['title'] ?? '',
+      description: json["description"] ?? '',
+      title: json["title"] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "_id": id,
+        "id": id,
         "name": name,
-        "title": title,
         "category": category,
         "imageUrl": List<dynamic>.from(imageUrl.map((x) => x)),
         "oldPrice": oldPrice,
         "price": price,
         "description": description,
+        "title": title,
       };
 }

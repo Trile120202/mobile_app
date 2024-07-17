@@ -124,72 +124,72 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(12.0, 10, 16, 16),
                     decoration: const BoxDecoration(color: Colors.white),
-                    child: Consumer<LoginNotifier>(
-                      builder: (context, loginNotifier, child) {
-                        return FutureBuilder<ProfileRes>(
-                          future: profile,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator.adaptive());
-                            } else if (snapshot.hasError) {
-                              return Text("Error: ${snapshot.error}");
-                            } else if (!snapshot.hasData) {
-                              return const Text("No user data available");
-                            } else {
-                              final userData = snapshot.data;
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 35,
-                                        width: 35,
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.grey.shade100,
-                                          backgroundImage: const AssetImage("assets/images/user.jpeg"),
-                                        ),
+                    child: Consumer<LoginNotifier>(builder: (context, loginNotifier, child) {
+                      return FutureBuilder<ProfileRes>(
+                        future: profile,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator.adaptive());
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else if (!snapshot.hasData || snapshot.data == null) {
+                            return const Text("No user data available");
+                          } else {
+                            final userData = snapshot.data;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 35,
+                                      width: 35,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.grey.shade100,
+                                        backgroundImage: const AssetImage("assets/images/user.jpeg"),
                                       ),
-                                      const SizedBox(
-                                        width: 8,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            userData?.username ?? "No username",
+                                            style: Theme.of(context).textTheme.bodyMedium,
+                                          ),
+                                          Text(
+                                            userData?.email ?? "No email",
+                                            style: Theme.of(context).textTheme.bodySmall,
+                                          ),
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              userData?.username ?? "",
-                                              style: Theme.of(context).textTheme.bodyMedium,
-                                            ),
-                                            Text(
-                                              userData?.email ?? "",
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            ),
-                                          ],
-                                        ),
+                                    ),
+                                  ],
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfilePageDetails(),
                                       ),
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProfilePageDetails(),
-                                        ),
-                                      );
-                                    },
-                                    child: const Icon(Feather.edit, size: 18),
-                                  )
-                                ],
-                              );
-                            }
-                          },
-                        );
-                      },
-                    ),
+                                    ).then((e){
+                                      getUser();
+                                    });
+                                  },
+                                  child: const Icon(Feather.edit, size: 18),
+                                )
+                              ],
+                            );
+                          }
+                        },
+                      );
+                    }),
                   ),
                   Column(
                     children: [

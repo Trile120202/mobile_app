@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -15,6 +17,9 @@ import 'package:pet_gear_pro/views/ui/payment.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/auth_response/profile_model.dart';
+import '../../services/auth_helper.dart';
+
 // CartPage.dart
 
 class CartPage extends StatefulWidget {
@@ -25,8 +30,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  late Future<List<Product>> _cartList;
-  List<Product>? checkout;
+  late Future<dynamic> _cartList;
+  List<ProductItem>? checkout;
   bool? isSelected = true;
   bool? isLogged;
 
@@ -72,7 +77,7 @@ class _CartPageState extends State<CartPage> {
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.65,
-                        child: FutureBuilder<List<Product>>(
+                        child: FutureBuilder(
                             future: _cartList,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -88,7 +93,7 @@ class _CartPageState extends State<CartPage> {
                                 final products = snapshot.data!;
                                 checkout = products;
                                 return ListView.builder(
-                                    itemCount: products.length,
+                                    itemCount: products!.length,
                                     padding: EdgeInsets.zero,
                                     itemBuilder: (context, index) {
                                       final data = products[index];
@@ -118,7 +123,7 @@ class _CartPageState extends State<CartPage> {
                                                           Padding(
                                                             padding: const EdgeInsets.all(12),
                                                             child: CachedNetworkImage(
-                                                              imageUrl: data.cartItem.imageUrl[0],
+                                                              imageUrl: data.product.imageUrl[0].imageUrl,
                                                               width: 70,
                                                               height: 70,
                                                               fit: BoxFit.fill,
@@ -174,14 +179,14 @@ class _CartPageState extends State<CartPage> {
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text(
-                                                              data.cartItem.name,
+                                                              data.product.name,
                                                               style: appstyle(16, Colors.black, FontWeight.bold),
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
                                                             Text(
-                                                              data.cartItem.category,
+                                                              data.product.category,
                                                               style: appstyle(14, Colors.grey, FontWeight.w600),
                                                             ),
                                                             const SizedBox(
@@ -191,7 +196,7 @@ class _CartPageState extends State<CartPage> {
                                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 Text(
-                                                                  "${double.parse(data.cartItem.price) * cartProvider.getQuantity(data)} \VNĐ",
+                                                                  "${double.parse(data.product.price) * cartProvider.getQuantity(data.product)} \VNĐ",
                                                                   style: appstyle(18, Colors.black, FontWeight.w600),
                                                                 ),
                                                                 const SizedBox(
@@ -215,7 +220,7 @@ class _CartPageState extends State<CartPage> {
                                                             children: [
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.decrementQuantity(data);
+                                                                    cartProvider.decrementQuantity(data.product);
                                                                   },
                                                                   child: const Icon(
                                                                     AntDesign.minussquare,
@@ -223,7 +228,7 @@ class _CartPageState extends State<CartPage> {
                                                                     color: Colors.grey,
                                                                   )),
                                                               Text(
-                                                                cartProvider.getQuantity(data).toString(),
+                                                                cartProvider.getQuantity(data.product).toString(),
                                                                 style: appstyle(
                                                                   16,
                                                                   Colors.black,
@@ -232,7 +237,7 @@ class _CartPageState extends State<CartPage> {
                                                               ),
                                                               InkWell(
                                                                   onTap: () {
-                                                                    cartProvider.incrementQuantity(data);
+                                                                    cartProvider.incrementQuantity(data.product);
                                                                   },
                                                                   child: const Icon(
                                                                     AntDesign.plussquare,
@@ -264,19 +269,37 @@ class _CartPageState extends State<CartPage> {
                               onTap: () async {
                                 final SharedPreferences prefs = await SharedPreferences.getInstance();
                                 String userId = prefs.getString('userId') ?? "";
+                                ProfileRes profile = await AuthHelper.getProfile();
+
+                                print(profile.id);
+                                print('${cartProvider.getCheckOutList.length}');
+
                                 Order model = Order(
                                     userId: userId,
                                     cartItems: cartProvider.getCheckOutList
-                                        .map((product) => CartItem(
-                                              name: product.cartItem.name,
-                                              id: product.cartItem.id,
-                                              price: product.cartItem.price,
-                                              cartQuantity: cartProvider.getQuantity(product),
+                                        .map((product) => CartItemABC(
+                                              name: product.product.name,
+                                              id: product.productId,
+                                              price: product.product.price,
+                                              cartQuantity: cartProvider.getQuantity(product.product),
                                             ))
                                         .toList());
-                                PaymentHelper.payment(model).then((value) {
+                                PaymentHelper.payment(model).then((value) async {
+                                  // print(model.toJson());
                                   paymentNotifier.paymentUrl = value;
-                                  print(paymentNotifier.paymentUrl);
+                                  // print(paymentNotifier.paymentUrl);
+                                  Map<String, dynamic> data = {
+                                    "userId": profile.id,
+                                    "cartItems": cartProvider.getCheckOutList
+                                        .map((product) => CartItemABC(
+                                              name: product.product.name,
+                                              id: product.productId,
+                                              price: product.product.price,
+                                              cartQuantity: cartProvider.getQuantity(product.product),
+                                            ))
+                                        .toList(),
+                                  };
+                                  await CartHelper.createOrders(data);
                                 });
                               },
                               label: "Proceed to Checkout"),

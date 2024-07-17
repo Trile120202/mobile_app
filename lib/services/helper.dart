@@ -6,7 +6,7 @@ class Helper {
   static var client = http.Client();
   //Dog
   Future<List<Products>> getDogProducts() async {
-    var url = Uri.http(Config.apiUrl, Config.foods);
+    var url = Uri.http(Config.apiUrl, Config.UnSignin);
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
@@ -20,7 +20,7 @@ class Helper {
 
   //Cat
   Future<List<Products>> getCatProducts() async {
-    var url = Uri.http(Config.apiUrl, Config.foods);
+    var url = Uri.http(Config.apiUrl, Config.UnSignin);
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
@@ -34,7 +34,7 @@ class Helper {
 
   //Other
   Future<List<Products>> getOrtherProducts() async {
-    var url = Uri.http(Config.apiUrl, Config.foods);
+    var url = Uri.http(Config.apiUrl, Config.UnSignin);
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
@@ -47,9 +47,17 @@ class Helper {
   }
 
   Future<List<Products>> search(String searchQuery) async {
-    var url = Uri.http(Config.apiUrl, "${Config.search}$searchQuery");
+    var url = Uri.http(Config.apiUrl, Config.UnSignin);
+
+    if(searchQuery!=''){
+      print(searchQuery);
+       url = Uri.http(Config.apiUrl, Config.UnSignin, {'search': searchQuery});
+    }
+
     var response = await client.get(url);
-    if (response.statusCode == 200) {
+
+
+    if (response.statusCode == 200||response.statusCode == 201) {
       var results = productsFromJson(response.body);
 
       return results;

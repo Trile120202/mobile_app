@@ -246,7 +246,7 @@ class _ProductPageState extends State<ProductPage> {
                                     height: 10,
                                   ),
                                   Text(
-                                    widget.products.description,
+                                    widget.products.description ?? "",
                                     textAlign: TextAlign.justify,
                                     maxLines: 4,
                                     style: appstyle(14, Colors.black, FontWeight.normal),
@@ -261,8 +261,13 @@ class _ProductPageState extends State<ProductPage> {
                                       child: CheckoutButton(
                                         onTap: () async {
                                           if (loginNotifier.loggedIn == true) {
-                                            AddToCart model = AddToCart(cartItem: widget.products.id, quantity: 1);
-                                            await CartHelper.addToCart(model);
+                                            print(widget.products.id);
+                                            AddToCart model = AddToCart(productId: widget.products.id, quantity: 1);
+                                            Map<String, dynamic> data = {
+                                              "productId": widget.products.id,
+                                              "quantity": 1
+                                            };
+                                            await CartHelper.addToCart(data);
                                             _showSnackbar(context, 'Added to Cart Successfully!');
                                           } else {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
@@ -271,7 +276,7 @@ class _ProductPageState extends State<ProductPage> {
                                         label: "Add to Cart",
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),

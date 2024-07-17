@@ -24,9 +24,9 @@ class _ProfilePageState extends State<ProfilePageDetails> {
     // Load user profile data
     var profile = await AuthHelper.getProfile();
     setState(() {
-      _nameController.text = profile.username;
-      _emailController.text = profile.email;
-      _locationController.text = profile.location;
+      _nameController.text = profile.username!;
+      _emailController.text = profile.email!;
+      _locationController.text = profile.location!;
     });
   }
 
@@ -37,7 +37,12 @@ class _ProfilePageState extends State<ProfilePageDetails> {
         location: _locationController.text,
       );
 
-      var result = await AuthHelper.updateUserProfile(updatedProfile);
+      Map<String, String> requestHeaders = {
+        "username": _nameController.text,
+        "location": _locationController.text,
+      };
+
+      var result = await AuthHelper.updateUserProfile(requestHeaders);
 
       if (result) {
         ScaffoldMessenger.of(context).showSnackBar(
