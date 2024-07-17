@@ -19,7 +19,12 @@ class CartHelper {
     };
 
     var url = Uri.https(Config.apiUrl, Config.addCartUrl);
+<<<<<<< HEAD
     var response = await client.post(url, headers: requestHeaders, body: jsonEncode(model));
+=======
+    var response = await client.post(url,
+        headers: requestHeaders, body: jsonEncode(model.toJson()));
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
     print(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
@@ -70,6 +75,7 @@ class CartHelper {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
+
     };
 
     var url = Uri.https(Config.apiUrl, Config.deleteCartUrl);
@@ -107,8 +113,10 @@ class CartHelper {
       var products = paidOrdersFromJson(response.body);
       return products;
     } else if (response.statusCode == 401) {
-      print('Error: Authentication failed. Please check the token and try again.');
-      throw Exception('Authentication failed. Please check the token and try again.');
+      print(
+          'Error: Authentication failed. Please check the token and try again.');
+      throw Exception(
+          'Authentication failed. Please check the token and try again.');
     } else {
       throw Exception('Failed to get orders: ${response.body}');
     }
@@ -127,7 +135,12 @@ class CartHelper {
     };
 
     var url = Uri.https(Config.apiUrl, Config.orders);
+<<<<<<< HEAD
     var response = await http.post(url, headers: requestHeaders, body: jsonEncode(data));
+=======
+    var response =
+    await http.post(url, headers: requestHeaders, body: jsonEncode(data));
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
@@ -140,6 +153,13 @@ class CartHelper {
     } else {
       throw Exception('Failed to get orders: ${response.body}');
       return false;
+<<<<<<< HEAD
     }
   }
+=======
+
+    }
+  }
+
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
 }

@@ -80,13 +80,20 @@ class _CartPageState extends State<CartPage> {
                         child: FutureBuilder(
                             future: _cartList,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator.adaptive());
-                              } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              } else if (snapshot.hasError ||
+                                  !snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
                                 return Center(
                                   child: ReusableText(
-                                    text: "There Nothing Here. Let's Buy SomeThing",
-                                    style: appstyle(18, Colors.black, FontWeight.bold),
+                                    text:
+                                        "There Nothing Here. Let's Buy SomeThing",
+                                    style: appstyle(
+                                        18, Colors.black, FontWeight.bold),
                                   ),
                                 );
                               } else {
@@ -100,20 +107,38 @@ class _CartPageState extends State<CartPage> {
 
                                       return GestureDetector(
                                         onTap: () {
-                                          cartProvider.toggleCheckOutProduct(data);
+                                          cartProvider
+                                              .toggleCheckOutProduct(data);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8),
                                           child: ClipRRect(
-                                            borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(12)),
                                             child: Container(
-                                              height: MediaQuery.of(context).size.height * 0.11,
-                                              width: MediaQuery.of(context).size.width,
-                                              decoration: BoxDecoration(color: Colors.grey.shade100, boxShadow: [
-                                                BoxShadow(color: Colors.grey.shade500, spreadRadius: 5, blurRadius: 0.3, offset: const Offset(0, 1)),
-                                              ]),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.11,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey.shade100,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors
+                                                            .grey.shade500,
+                                                        spreadRadius: 5,
+                                                        blurRadius: 0.3,
+                                                        offset:
+                                                            const Offset(0, 1)),
+                                                  ]),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Row(
                                                     children: [
@@ -121,9 +146,21 @@ class _CartPageState extends State<CartPage> {
                                                         clipBehavior: Clip.none,
                                                         children: [
                                                           Padding(
+<<<<<<< HEAD
                                                             padding: const EdgeInsets.all(12),
                                                             child: CachedNetworkImage(
                                                               imageUrl: data.product.imageUrl[0].imageUrl,
+=======
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(12),
+                                                            child:
+                                                                CachedNetworkImage(
+                                                              imageUrl: data
+                                                                  .product
+                                                                  .imageUrl[0]
+                                                                  .imageUrl,
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                               width: 70,
                                                               height: 70,
                                                               fit: BoxFit.fill,
@@ -131,73 +168,138 @@ class _CartPageState extends State<CartPage> {
                                                           ),
                                                           Positioned(
                                                             top: -2,
-                                                            child: GestureDetector(
+                                                            child:
+                                                                GestureDetector(
                                                               onTap: () {
                                                                 setState(() {
-                                                                  cartProvider.toggleCheckOutProduct(data);
+                                                                  cartProvider
+                                                                      .toggleCheckOutProduct(
+                                                                          data);
                                                                 });
                                                               },
                                                               child: SizedBox(
                                                                 height: 30.h,
                                                                 width: 30.w,
                                                                 child: Icon(
-                                                                  cartProvider.getCheckOutList.contains(data) ? Feather.check_square : Feather.square,
+                                                                  cartProvider
+                                                                          .getCheckOutList
+                                                                          .contains(
+                                                                              data)
+                                                                      ? Feather
+                                                                          .check_square
+                                                                      : Feather
+                                                                          .square,
                                                                   size: 20,
-                                                                  color: Colors.black,
+                                                                  color: Colors
+                                                                      .black,
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
                                                           Positioned(
                                                               bottom: -2,
-                                                              child: GestureDetector(
-                                                                onTap: () async {
-                                                                  await CartHelper.deleteItem(data.id);
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap:
+                                                                    () async {
+                                                                  await CartHelper
+                                                                      .deleteItem(
+                                                                          data.id);
                                                                   setState(() {
-                                                                    _cartList = CartHelper.getCart();
+                                                                    _cartList =
+                                                                        CartHelper
+                                                                            .getCart();
                                                                   });
-                                                                  if (await CartHelper.getCart().then((cart) => cart.isEmpty)) {
-                                                                    cartProvider.clearCart();
+                                                                  if (await CartHelper
+                                                                          .getCart()
+                                                                      .then((cart) =>
+                                                                          cart.isEmpty)) {
+                                                                    cartProvider
+                                                                        .clearCart();
                                                                   }
                                                                 },
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   width: 40,
                                                                   height: 30,
-                                                                  decoration: const BoxDecoration(color: Colors.black, borderRadius: BorderRadius.only(topRight: Radius.circular(12))),
-                                                                  child: const Icon(
-                                                                    AntDesign.delete,
+                                                                  decoration: const BoxDecoration(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      borderRadius:
+                                                                          BorderRadius.only(
+                                                                              topRight: Radius.circular(12))),
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .delete,
                                                                     size: 20,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ))
                                                         ],
                                                       ),
                                                       Padding(
-                                                        padding: const EdgeInsets.only(top: 12, left: 20),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 12,
+                                                                left: 20),
                                                         child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
                                                               data.product.name,
+<<<<<<< HEAD
                                                               style: appstyle(16, Colors.black, FontWeight.bold),
+=======
+                                                              style: appstyle(
+                                                                  16,
+                                                                  Colors.black,
+                                                                  FontWeight
+                                                                      .bold),
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
                                                             Text(
+<<<<<<< HEAD
                                                               data.product.category,
                                                               style: appstyle(14, Colors.grey, FontWeight.w600),
+=======
+                                                              data.product
+                                                                  .category,
+                                                              style: appstyle(
+                                                                  14,
+                                                                  Colors.grey,
+                                                                  FontWeight
+                                                                      .w600),
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
                                                             ),
                                                             Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Text(
                                                                   "${double.parse(data.product.price) * cartProvider.getQuantity(data.product)} \VNĐ",
+<<<<<<< HEAD
                                                                   style: appstyle(18, Colors.black, FontWeight.w600),
+=======
+                                                                  style: appstyle(
+                                                                      18,
+                                                                      Colors
+                                                                          .black,
+                                                                      FontWeight
+                                                                          .w600),
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                                 ),
                                                                 const SizedBox(
                                                                   width: 30,
@@ -212,37 +314,73 @@ class _CartPageState extends State<CartPage> {
                                                   Row(
                                                     children: [
                                                       Padding(
-                                                        padding: const EdgeInsets.all(8.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
                                                         child: Container(
-                                                          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(16))),
+                                                          decoration: const BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          16))),
                                                           child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
                                                               InkWell(
                                                                   onTap: () {
+<<<<<<< HEAD
                                                                     cartProvider.decrementQuantity(data.product);
+=======
+                                                                    cartProvider
+                                                                        .decrementQuantity(
+                                                                            data.product);
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                                   },
-                                                                  child: const Icon(
-                                                                    AntDesign.minussquare,
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .minussquare,
                                                                     size: 20,
-                                                                    color: Colors.grey,
+                                                                    color: Colors
+                                                                        .grey,
                                                                   )),
                                                               Text(
+<<<<<<< HEAD
                                                                 cartProvider.getQuantity(data.product).toString(),
+=======
+                                                                cartProvider
+                                                                    .getQuantity(
+                                                                        data.product)
+                                                                    .toString(),
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                                 style: appstyle(
                                                                   16,
                                                                   Colors.black,
-                                                                  FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                                 ),
                                                               ),
                                                               InkWell(
                                                                   onTap: () {
+<<<<<<< HEAD
                                                                     cartProvider.incrementQuantity(data.product);
+=======
+                                                                    cartProvider
+                                                                        .incrementQuantity(
+                                                                            data.product);
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                                                   },
-                                                                  child: const Icon(
-                                                                    AntDesign.plussquare,
+                                                                  child:
+                                                                      const Icon(
+                                                                    AntDesign
+                                                                        .plussquare,
                                                                     size: 20,
-                                                                    color: Colors.black,
+                                                                    color: Colors
+                                                                        .black,
                                                                   )),
                                                             ],
                                                           ),
@@ -267,9 +405,15 @@ class _CartPageState extends State<CartPage> {
                           alignment: Alignment.bottomCenter,
                           child: CheckoutButton(
                               onTap: () async {
-                                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
                                 String userId = prefs.getString('userId') ?? "";
+<<<<<<< HEAD
                                 ProfileRes profile = await AuthHelper.getProfile();
+=======
+                                ProfileRes profile =
+                                    await AuthHelper.getProfile();
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
 
                                 print(profile.id);
                                 print('${cartProvider.getCheckOutList.length}');
@@ -281,10 +425,19 @@ class _CartPageState extends State<CartPage> {
                                               name: product.product.name,
                                               id: product.productId,
                                               price: product.product.price,
+<<<<<<< HEAD
                                               cartQuantity: cartProvider.getQuantity(product.product),
                                             ))
                                         .toList());
                                 PaymentHelper.payment(model).then((value) async {
+=======
+                                              cartQuantity: cartProvider
+                                                  .getQuantity(product.product),
+                                            ))
+                                        .toList());
+                                PaymentHelper.payment(model)
+                                    .then((value) async {
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                   // print(model.toJson());
                                   paymentNotifier.paymentUrl = value;
                                   // print(paymentNotifier.paymentUrl);
@@ -295,7 +448,12 @@ class _CartPageState extends State<CartPage> {
                                               name: product.product.name,
                                               id: product.productId,
                                               price: product.product.price,
+<<<<<<< HEAD
                                               cartQuantity: cartProvider.getQuantity(product.product),
+=======
+                                              cartQuantity: cartProvider
+                                                  .getQuantity(product.product),
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                             ))
                                         .toList(),
                                   };

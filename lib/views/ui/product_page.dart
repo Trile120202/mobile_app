@@ -261,6 +261,7 @@ class _ProductPageState extends State<ProductPage> {
                                       child: CheckoutButton(
                                         onTap: () async {
                                           if (loginNotifier.loggedIn == true) {
+<<<<<<< HEAD
                                             print(widget.products.id);
                                             AddToCart model = AddToCart(productId: widget.products.id, quantity: 1);
                                             Map<String, dynamic> data = {
@@ -268,6 +269,10 @@ class _ProductPageState extends State<ProductPage> {
                                               "quantity": 1
                                             };
                                             await CartHelper.addToCart(data);
+=======
+                                            AddToCart model = AddToCart(productId: widget.products.id, quantity: 1);
+                                            await CartHelper.addToCart(model);
+>>>>>>> 5f99aaeba6c24b1036ffb69467ebde6cbb00c91c
                                             _showSnackbar(context, 'Added to Cart Successfully!');
                                           } else {
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
